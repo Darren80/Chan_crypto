@@ -1,0 +1,70 @@
+button {
+    margin-right: 1rem;
+}
+.nsfw Button {
+    color: lightsalmon;
+    display: block;
+}
+.post {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    
+    
+}
+
+.biz-card {
+    width: 80%;
+}
+
+#timeline .vis-item {
+    border-color: chartreuse;
+    color: white;
+}
+#timeline .vis-item.vis-selected {
+    color: #50267d;
+}
+
+#timeline .vis-item.vis-selected {
+    border-color: #ff3d00;
+}
+
+#timeline .vis-time-axis .vis-grid.vis-odd {
+    background: #15302d;
+  }
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.post-image {
+    width: 80%;
+    height: 15rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    animation: fade-in 0.3s ease;
+}
+.linear-progress {
+    width: 80%;
+}
+.post-text {
+    width: 40%;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.Preamble {
+    font-size: 1rem;
+}
+.Preamble button {
+    margin-bottom: 2rem;
+    margin-right: 2rem;
+}

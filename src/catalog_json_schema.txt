@@ -1,0 +1,400 @@
+  1 {
+  2   "definitions": {},
+  3   "$schema": "http://json-schema.org/draft-07/schema#",
+  4   "$id": "http://example.com/root.json",
+  5   "type": "object",
+  6   "title": "The Root Schema",
+  7   "required": [
+  8     "page",
+  9     "threads"
+ 10   ],
+ 11   "properties": {
+ 12     "page": {
+ 13       "$id": "#/properties/page",
+ 14       "type": "integer",
+ 15       "title": "Page of thread",
+ 16       "examples": [
+ 17         1
+ 18       ],
+ 19       "minimum": 1.0,
+ 20       "maximum": 10.0
+ 21     },
+ 22     "threads": {
+ 23       "$id": "#/properties/threads",
+ 24       "type": "array",
+ 25       "title": "The Threads Schema",
+ 26       "items": {
+ 27         "$id": "#/properties/threads/items",
+ 28         "type": "object",
+ 29         "title": "The Items Schema",
+ 30         "required": [
+ 31           "no",
+ 32           "now",
+ 33           "name",
+ 34           "sub",
+ 35           "com",
+ 36           "filename",
+ 37           "ext",
+ 38           "w",
+ 39           "h",
+ 40           "tn_w",
+ 41           "tn_h",
+ 42           "tim",
+ 43           "time",
+ 44           "md5",
+ 45           "fsize",
+ 46           "resto",
+ 47           "id",
+ 48           "bumplimit",
+ 49           "imagelimit",
+ 50           "semantic_url",
+ 51           "replies",
+ 52           "images",
+ 53           "omitted_posts",
+ 54           "omitted_images",
+ 55           "last_replies",
+ 56           "last_modified"
+ 57         ],
+ 58         "properties": {
+ 59           "no": {
+ 60             "$id": "#/properties/threads/items/properties/no",
+ 61             "type": "integer",
+ 62             "title": "4chan Thread/Post Number",
+ 63             "default": 0,
+ 64             "examples": [
+ 65               12334370
+ 66             ],
+ 67             "readOnly": true
+ 68           },
+ 69           "now": {
+ 70             "$id": "#/properties/threads/items/properties/now",
+ 71             "type": "string",
+ 72             "title": "Human Readable Date and Time of Post Creation, EST/EDT",
+ 73             "examples": [
+ 74               "01/04/19(Fri)04:44:56"
+ 75             ],
+ 76             "readOnly": true,
+ 77             "pattern": "^(.*)$",
+ 78             "format": null
+ 79           },
+ 80           "name": {
+ 81             "$id": "#/properties/threads/items/properties/name",
+ 82             "type": "string",
+ 83             "title": "Name of Poster",
+ 84             "default": "Anonymous",
+ 85             "examples": [
+ 86               "Anonymous"
+ 87             ],
+ 88             "readOnly": true,
+ 89             "pattern": "^(.*)$"
+ 90           },
+ 91           "sub": {
+ 92             "$id": "#/properties/threads/items/properties/sub",
+ 93             "type": "string",
+ 94             "title": "Subtitle",
+ 95             "default": "",
+ 96             "examples": [
+ 97               "Chainlink is likely in on this..."
+ 98             ],
+ 99             "pattern": "^(.*)$"
+100           },
+101           "com": {
+102             "$id": "#/properties/threads/items/properties/com",
+103             "type": "string",
+104             "title": "Comment",
+105             "default": "",
+106             "examples": [
+107               "https://www.etsi.org/news-events/ne<wbr>ws/1369-2018-12-press-etsi-launches<wbr>-new-industry-specification-group-o<wbr>n-blockchain<br><br>https://portal.etsi.org/TBSiteMap/P<wbr>DL/ListOfPDLMembersAndParticipants.<wbr>aspx<br><span class=\"quote\">&gt;Look at these behemoths</span><br><br>Accord Project up in this. Chainlink will provide oracle services most likely. It&#039;s a permissioned chain, but we all knew this would happen initially. Intranets first, then the internet. We gonna make it boys."
+108             ],
+109             "pattern": "^(.*)$"
+110           },
+111           "filename": {
+112             "$id": "#/properties/threads/items/properties/filename",
+113             "type": "string",
+114             "title": "Filename of user image as uploaded",
+115             "default": "",
+116             "examples": [
+117               "Screenshot_20190104-164141"
+118             ],
+119             "pattern": "^(.*)$"
+120           },
+121           "ext": {
+122             "$id": "#/properties/threads/items/properties/ext",
+123             "type": "string",
+124             "title": "Extension of user image on the server",
+125             "default": "",
+126             "examples": [
+127               ".png"
+128             ],
+129             "pattern": "^(.*)$"
+130           },
+131           "w": {
+132             "$id": "#/properties/threads/items/properties/w",
+133             "type": "integer",
+134             "title": "Width",
+135             "description": "The width of the image",
+136             "default": 0,
+137             "examples": [
+138               1440
+139             ]
+140           },
+141           "h": {
+142             "$id": "#/properties/threads/items/properties/h",
+143             "type": "integer",
+144             "title": "Height",
+145             "description": "The height of the image",
+146             "default": 0,
+147             "examples": [
+148               2880
+149             ]
+150           },
+151           "tn_w": {
+152             "$id": "#/properties/threads/items/properties/tn_w",
+153             "type": "integer",
+154             "title": "Thumbnail Width",
+155             "description": "The width of the Thumbnail image",
+156             "default": 0,
+157             "examples": [
+158               125
+159             ]
+160           },
+161           "tn_h": {
+162             "$id": "#/properties/threads/items/properties/tn_h",
+163             "type": "integer",
+164             "title": "Thumbnail Height",
+165             "description": "The height of the Thumbnail image",
+166             "default": 0,
+167             "examples": [
+168               250
+169             ]
+170           },
+171           "tim": {
+172             "$id": "#/properties/threads/items/properties/tim",
+173             "type": "integer",
+174             "title": "The Tim Schema",
+175             "description": "UNIX Time + milliseconds = tim. Image path on server = `https://i.4cdn.org/board/${tim}${ext}`, replace board with board name.",
+176             "default": 0,
+177             "examples": [
+178               1546595096690
+179             ],
+180             "readOnly": true
+181           },
+182           "time": {
+183             "$id": "#/properties/threads/items/properties/time",
+184             "type": "integer",
+185             "title": "The Time Schema",
+186             "description": "The time in UNIX that the thread was posted. Note: UNIX times are GMT 0",
+187             "default": 0,
+188             "examples": [
+189               1546595096
+190             ],
+191             "readOnly": true
+192           },
+193           "md5": {
+194             "$id": "#/properties/threads/items/properties/md5",
+195             "type": "string",
+196             "title": "md5 Hash",
+197             "default": "",
+198             "examples": [
+199               "46Yq3LOwriy9m2mZw/WYNw=="
+200             ],
+201             "readOnly": true,
+202             "pattern": "^(.*)$"
+203           },
+204           "fsize": {
+205             "$id": "#/properties/threads/items/properties/fsize",
+206             "type": "integer",
+207             "title": "File size in bytes",
+208             "default": 0,
+209             "examples": [
+210               761542
+211             ]
+212           },
+213           "resto": {
+214             "$id": "#/properties/threads/items/properties/resto",
+215             "type": "integer",
+216             "title": "The Resto Schema",
+217             "description": "0 (is a thread OP)",
+218             "default": 0,
+219             "examples": [
+220               0
+221             ],
+222             "minimum": 1.0,
+223             "maximum": 9999999999999.0
+224           },
+225           "id": {
+226             "$id": "#/properties/threads/items/properties/id",
+227             "type": "string",
+228             "title": "The Id Schema",
+229             "default": "",
+230             "examples": [
+231               "Fjb2a13S"
+232             ],
+233             "pattern": "^(.*)$"
+234           },
+235           "bumplimit": {
+236             "$id": "#/properties/threads/items/properties/bumplimit",
+237             "type": "integer",
+238             "title": "The Bumplimit Schema",
+239             "default": 0,
+240             "examples": [
+241               0
+242             ]
+243           },
+244           "imagelimit": {
+245             "$id": "#/properties/threads/items/properties/imagelimit",
+246             "type": "integer",
+247             "title": "The Imagelimit Schema",
+248             "default": 0,
+249             "examples": [
+250               0
+251             ]
+252           },
+253           "semantic_url": {
+254             "$id": "#/properties/threads/items/properties/semantic_url",
+255             "type": "string",
+256             "title": "The Semantic_url Schema",
+257             "default": "",
+258             "examples": [
+259               "chainlink-is-likely-in-on-this"
+260             ],
+261             "pattern": "^(.*)$"
+262           },
+263           "replies": {
+264             "$id": "#/properties/threads/items/properties/replies",
+265             "type": "integer",
+266             "title": "The Replies Schema",
+267             "default": 0,
+268             "examples": [
+269               49
+270             ]
+271           },
+272           "images": {
+273             "$id": "#/properties/threads/items/properties/images",
+274             "type": "integer",
+275             "title": "The Images Schema",
+276             "default": 0,
+277             "examples": [
+278               2
+279             ]
+280           },
+281           "omitted_posts": {
+282             "$id": "#/properties/threads/items/properties/omitted_posts",
+283             "type": "integer",
+284             "title": "The Omitted_posts Schema",
+285             "default": 0,
+286             "examples": [
+287               44
+288             ]
+289           },
+290           "omitted_images": {
+291             "$id": "#/properties/threads/items/properties/omitted_images",
+292             "type": "integer",
+293             "title": "The Omitted_images Schema",
+294             "default": 0,
+295             "examples": [
+296               1
+297             ]
+298           },
+299           "last_replies": {
+300             "$id": "#/properties/threads/items/properties/last_replies",
+301             "type": "array",
+302             "title": "The Last_replies Schema",
+303             "items": {
+304               "$id": "#/properties/threads/items/properties/last_replies/items",
+305               "type": "object",
+306               "title": "The Items Schema",
+307               "required": [
+308                 "no",
+309                 "now",
+310                 "name",
+311                 "com",
+312                 "time",
+313                 "resto",
+314                 "id"
+315               ],
+316               "properties": {
+317                 "no": {
+318                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/no",
+319                   "type": "integer",
+320                   "title": "The No Schema",
+321                   "default": 0,
+322                   "examples": [
+323                     12336250
+324                   ]
+325                 },
+326                 "now": {
+327                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/now",
+328                   "type": "string",
+329                   "title": "The Now Schema",
+330                   "default": "",
+331                   "examples": [
+332                     "01/04/19(Fri)09:42:40"
+333                   ],
+334                   "pattern": "^(.*)$"
+335                 },
+336                 "name": {
+337                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/name",
+338                   "type": "string",
+339                   "title": "The Name Schema",
+340                   "default": "",
+341                   "examples": [
+342                     "Anonymous"
+343                   ],
+344                   "pattern": "^(.*)$"
+345                 },
+346                 "com": {
+347                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/com",
+348                   "type": "string",
+349                   "title": "The Com Schema",
+350                   "default": "",
+351                   "examples": [
+352                     "<a href=\"#p12336229\" class=\"quotelink\">&gt;&gt;12336229</a><br>the token becoming worthless one day /= worthless today that&#039;s why it&#039;s still a good investment as long as you pull the trigger on time and sell before the inevitable happens"
+353                   ],
+354                   "pattern": "^(.*)$"
+355                 },
+356                 "time": {
+357                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/time",
+358                   "type": "integer",
+359                   "title": "The Time Schema",
+360                   "default": 0,
+361                   "examples": [
+362                     1546612960
+363                   ]
+364                 },
+365                 "resto": {
+366                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/resto",
+367                   "type": "integer",
+368                   "title": "The Resto Schema",
+369                   "default": 0,
+370                   "examples": [
+371                     12334370
+372                   ]
+373                 },
+374                 "id": {
+375                   "$id": "#/properties/threads/items/properties/last_replies/items/properties/id",
+376                   "type": "string",
+377                   "title": "The Id Schema",
+378                   "default": "",
+379                   "examples": [
+380                     "dTZ7n8h6"
+381                   ],
+382                   "pattern": "^(.*)$"
+383                 }
+384               }
+385             }
+386           },
+387           "last_modified": {
+388             "$id": "#/properties/threads/items/properties/last_modified",
+389             "type": "integer",
+390             "title": "The Last_modified Schema",
+391             "default": 0,
+392             "examples": [
+393               1546613663
+394             ]
+395           }
+396         }
+397       }
+398     }
+399   }
+400 }

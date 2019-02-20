@@ -1,0 +1,17 @@
+.op {
+    border-top: 3px solid white;
+    border-bottom: 3px solid white;
+    background-color: rgba(255, 238, 82, 0.479);
+}
+
+.link-posts {
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+.link-posts .child {
+    flex: 1 1 21%;
+    margin: 1rem;
+
+}
