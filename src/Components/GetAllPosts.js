@@ -21,7 +21,7 @@ export class GetAllPosts extends React.Component {
     if (uNIXkey) {
         this.getAllPostsCallback(Number(uNIXkey), uNIXvalue);
       }
-    await this.update(10);
+    await this.update(990);
 
   }
 

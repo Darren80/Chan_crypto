@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './DataAnalyser.css';
 import { analyser } from './utils/analyser.js';
+import { db } from './utils/saveToDatabase.js';
 import { localforageInit } from './utils/initLocalforage';
 import { linkScore } from './utils/link-score';
 
@@ -109,6 +110,8 @@ export class DataAnalyser extends React.Component {
     if (!await this.preworkChecks(threadPosts)) {
       return;
     }
+
+    db.connect();
 
     // threadPosts = await analyser.fleschKincaid(threadPosts); //async //Unused
     // threadPosts = analyser.uniqueParticipants(threadPosts); //Unused

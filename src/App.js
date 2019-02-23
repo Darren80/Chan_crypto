@@ -48,7 +48,7 @@ class App extends Component {
     let url = corsProxy + "https://a.4cdn.org/" + board + "/catalog.json";
 
     try {
-      const response = await fetch(url)
+      const response = await fetch(url);
       if (response.ok) {
         const jsonResponse = await response.json();
         this.setState({
