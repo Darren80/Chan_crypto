@@ -18,6 +18,7 @@
     "node-fetch": "^2.3.0",
     "outliers": "0.0.3",
     "pace-js": "^1.0.2",
+    "pm2": "^3.3.1",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-html-parser": "^2.0.2",
@@ -34,7 +35,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+	"postinstall": "cd .. && npm install"
   },
   "eslintConfig": {
     "extends": "react-app"
