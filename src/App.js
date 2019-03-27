@@ -63,6 +63,22 @@ class App extends Component {
 
   async prepareData() {
 
+    let url = "https://cryptostar.ga/api";
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const responseJson = await response.json();
+        this.setState({
+          computed: 1,
+          threadPosts: responseJson.threads,
+          threadKey: responseJson.date
+        });
+        console.log(responseJson);
+      }
+    } catch (e) {
+
+    }
+
     //Filter out mod posts
     //Extract all threads from catalog pages
     let allThreads = this.state.catalog.reduce((allThreads, page) => {
@@ -170,13 +186,13 @@ class App extends Component {
           <p>
             Edit <code>src/App.js</code> and save to reload.
       </p>
-          <GetAllPosts
+          {/* <GetAllPosts
             threads={this.state.threads}
             handleData={this.handleData}
             refreshCatalog={this.refreshCatalog}
-          />
+          /> */}
 
-          <DataAnalyser
+          {/* <DataAnalyser
             threadPosts={this.state.threadPosts}
             threadKey={this.state.threadKey}
 
@@ -184,7 +200,7 @@ class App extends Component {
             cards={this.state.cards}
             handleData={this.handleData}
             deepaiApiKey={this.state.deepaiApiKey}
-          />
+          /> */}
 
           {this.state.computed && (<PostSelectors
 

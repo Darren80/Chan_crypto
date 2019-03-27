@@ -1,0 +1,22 @@
+db.createUser(
+  {
+    user: "AdminDarren",
+    pwd: "AdminDarren'sSecurePassword",
+    roles: [ { role: "root", db: "admin" } ]
+  }
+)
+
+mongo -u AdminDarren -p --authenticationDatabase admin
+
+db.grantRolesToUser('AdminDarren',[{ role: "root", db: "admin" }])
+
+ssh root@cryptostar.ga
+
+ssh -L 9221:localhost:9229 root@cryptostar.ga
+
+ssh \
+-L 4321:localhost:27017 \
+-i ~/.ssh/authorized_keys \
+root@cryptostar.ga
+
+ssh -L 4321:localhost:27017 root@cryptostar.ga -fN

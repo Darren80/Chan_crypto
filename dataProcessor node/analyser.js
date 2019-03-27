@@ -1,17 +1,23 @@
-import { localforageInit } from './initLocalforage';
-
+const MongoClient = require('mongodb').MongoClient
 const linkify = require('linkifyjs');
 const cryptocurrencies = require('cryptocurrencies');
+const striptags = require('striptags');
 const top400Tickers = ['BTC', 'XRP', 'ETH', 'LTC', 'EOS', 'BCH', 'USDT', 'TRX', 'XLM', 'BNB', 'BSV', 'ADA', 'XMR', 'IOTA', 'DASH', 'NEO', 'MKR', 'ETC', 'XEM', 'ZEC', 'USDC', 'WAVES', 'XTZ', 'DOGE', 'VET', 'TUSD', 'ONT', 'BTG', 'QTUM', 'LINK', 'OMG', 'DCR', 'HOT', 'REP', 'BAT', 'ZRX', 'ZIL', 'LSK', 'PAX', 'BCN', 'NANO', 'BCD', 'DGB', 'BTS', 'NPXS', 'ICX', 'AE', 'XVG', 'STEEM', 'SC', 'GUSD', 'STRAT', 'BTM', 'DAI', 'R', 'IOST', 'KMD', 'PPT', 'SNT', 'ETN', 'CNX', 'REPO', 'GNT', 'MAID', 'AOA', 'THETA', 'ARDR', 'FCT', 'HT', 'HC', 'ODE', 'INB', 'XIN', 'ARK', 'LRC', 'WTC', 'QNT', 'LKY', 'PIVX', 'VERI', 'CRO', 'MANA', 'RDD', 'EURS', 'GXC', 'PAI', 'MCO', 'AION', 'KCS', 'NEXO', 'ETP', 'DGD', 'XZC', 'ELA', 'RVN', 'POWR', 'BNT', 'WAX', 'DENT', 'MONA', 'WAN', 'ELF', 'MOAC', 'POLY', 'B2G', 'SAN', 'PAY', 'DGTX', 'LOOM', 'CENNZ', 'NULS', 'ZEN', 'NXT', 'QKC', 'NAS', 'TOMO', 'FUN', 'APL', 'WICC', 'SYS', 'AGI', 'BTCP', 'ENG', 'QASH', 'MGO', 'EDR', 'BCZERO', 'DCN', 'GBYTE', 'ENJ', 'GBC', 'GAS', 'RLC', 'OSA', 'EDO', 'RNT', 'KNC', 'PART', 'CMT', 'DRGN', 'STORJ', 'MITH', 'MFT', 'KIN', 'NXS', 'BRD', 'CHX', 'XPX', 'QBIT', 'IOTX', 'SALT', 'GVT', 'CVC', 'CND', 'XYO', 'EDG', 'SUB', 'CTXC', 'UNO', 'GRS', 'C20', 'BOS', 'AUTO', 'NEBL', 'INO', 'HYC', 'REQ', 'TCT', 'GTO', 'GETX', 'STORM', 'BIX', 'SRN', 'MDA', 'TRUE', 'PLC', 'SXDT', 'PPC', 'VTC', 'LOC', 'ETHOS', 'OCN', 'BFT', 'VEE', 'GNO', 'BZNT', 'WGR', 'PZM', 'SKY', 'EMC', 'DATA', 'CNUS', 'TKY', 'NSD', 'BLOCK', 'LML', 'TEL', 'POE', 'QRL', 'IGNIS', 'SMT', 'MAN', 'TPAY', 'DDD', 'PMA', 'RDN', 'MTL', 'ECOREAL', 'ANT', 'REN', 'CRPT', 'OST', 'STACS', 'NEC', 'RHOC', 'DMT', 'UTK', 'SLS', 'DEX', 'TEN', 'VITAE', 'HEDG', 'NCASH', 'MLN', 'CS', 'MEDX', 'BCO', 'NAV', 'RUFF', 'EVR', 'SLT', 'TKN', 'DLT', 'NMC', 'SMART', 'VIBE', 'LCC', 'DROP', 'SBD', 'FSN', 'INS', 'EMC2', 'QSP', 'GOT', 'PLR', 'HYN', 'NKN', 'APIS', 'EVN', 'SAFEX', 'PPP', 'FIII', 'EVN', 'LEND', 'SWM', 'GTC', 'BRZC', 'MOC', 'WINGS', 'BLZ', 'ADX', 'ECA', 'AMB', 'MXM', 'BURST', 'UBQ', 'CPT', 'NLG', 'CWV', 'LRN', 'NRG', 'AOG', 'XWC', 'MDS', 'SDA', 'BCV', 'TIOX', 'LEO', 'HPB', 'WABI', 'NIX', 'COSS', 'XDN', 'COSM', 'FLO', 'SPHTX', 'MWAT', 'BEAM', 'BAX', 'SNGLS', 'PHX', 'KEY', 'ITC', 'VIA', 'TNB', 'WPR', 'ABT', 'SNM', 'MXC', 'LA', 'ABT', 'NEU', 'BAY', 'DNT', 'MET', 'NOAH', 'LAMB', 'CSC', 'SCRL', 'IHT', 'META', 'FAIR', 'WCT', 'ZIP', 'HUM', 'MOD', 'BITCNY', 'EDR', 'CLOAK', 'RFR', 'PRO', 'TNT', 'VITE', 'PLY', 'POA', 'FOAM', 'BTO', 'HYDRO', 'WWB', 'AMO', 'KAT', 'XSN', 'BPT', 'QNTU', 'MED', 'RCN', 'ACT', 'QLC', 'JNT', 'CLAM', 'DTA', 'CPC', 'EVX', 'TRIO', 'SOC', 'XAS', 'GAME', 'CBC', 'ZCL', 'TMC', 'CVNT', 'CVT', 'DX', 'TRAC', 'ATCC', 'OIO', 'LBC', 'MOBI', 'MTH', 'QCH', 'LGO', 'PRG', 'CDT', 'ARN', 'POLIS', 'RBLX', 'ROX', 'TTC', '$PAC', 'PST', 'DBET', 'SSP', 'LOKI', 'NPX', 'FTM', 'INT', 'DEC', 'NMR', 'DGX', 'LYL', 'LYM', 'PAI', 'KAN', 'RTH', 'APPC', 'DERO', 'TIX', 'CRYP', 'BITUSD', 'CNN', 'LBA', 'MER', 'LINDA', 'XCP', 'VIB', 'YOYOW', 'NTY', 'POT']
+const he = require('he');
 // const fleschKincaid = require('flesch-kincaid');
 
-const _ = require("underscore");
+const _ = require("underscore"),
+    fs = require('fs'),
+    path = require('path');
+
+const isRequired = () => { throw new Error('Parameter is required'); };
 
 var allWords;
 
-export let analyser = {
+let analyser = {
 
     async postLength(threadPosts) {
+        let wrds = [];
 
         return new Promise(async (resolve, reject) => {
 
@@ -22,8 +28,25 @@ export let analyser = {
 
                     if (post.Ωword_count && post.Ωunique_word_count && post.Ωunique_word_count_percent) { continue };
 
-                    let comText = helper.removeHTML(post.com);
-                    let subText = helper.removeHTML(post.sub);
+                    let comText = "";
+                    if (post.com) {
+                        // comText = post.com.replace(/<br>/g, ' ').replace(/<[^>]+>/g, ''); //Remove line-breaks then remove html
+
+                        // comText = he.decode(comText); //decode html entities to characters e.g. $gt; would equal >
+
+                        // comText = comText.replace(/>/g, '> '); //Add a space to seperate green text marker and words.
+                        comText = helper.stripPost(post.com);
+                    }
+
+                    let subText = "";
+                    if (post.sub) {
+                        // subText = post.sub.replace(/<br>/g, ' ').replace(/<[^>]+>/g, ''); //Remove line-breaks then remove html
+
+                        // subText = he.decode(subText); //decode html entities to characters e.g. $gt; would equal >
+
+                        // subText = subText.replace(/>/g, '> '); //Add a space to seperate green text marker and words.
+                        subText = helper.stripPost(post.sub);
+                    }
 
                     //Use the Omega Ω symbol to push items to the bottom of the list. Ω comes after z.
                     let Ωword_count = helper.countWords(comText) + helper.countWords(subText);
@@ -31,7 +54,7 @@ export let analyser = {
                     let Ωunique_word_count_percent = Math.round(Ωunique_word_count / Ωword_count * 100);
 
                     wordCountArray[index].push({
-                        'Ωword_count': Ωword_count, 
+                        'Ωword_count': Ωword_count,
                         'Ωunique_word_count': Ωunique_word_count,
                         'Ωunique_word_count_percent': Ωunique_word_count_percent
                     });
@@ -60,8 +83,8 @@ export let analyser = {
         for (let [index, thread] of threadPosts.entries()) {
             let matchesInThread = [];
             for (let post of thread.posts) {
-                let comText = helper.removeHTML(post.com);
-                let subText = helper.removeHTML(post.sub);
+                let comText = helper.stripPost(post.com);
+                let subText = helper.stripPost(post.sub);
 
                 let tickerSymbolRegExp = /([A-Z]){2,}/g;
                 let counter = 0;
@@ -82,7 +105,6 @@ export let analyser = {
             thread.tickers = matchesInThread;
             // if (matchesInThread.length) { console.log(matchesInThread, index); }
         }
-        console.log(threadPosts);
         return threadPosts;
     },
 
@@ -148,7 +170,11 @@ export let analyser = {
         threadPosts.forEach(thread => {
             thread.links = [];
             thread.posts.forEach((post, i) => {
-                let arrayOfLinks = linkify.find(post.com + " " + post.sub);
+
+                let comText = helper.stripPost(post.com, false);
+                let subText = helper.stripPost(post.sub, false);
+
+                let arrayOfLinks = linkify.find(comText + " " + subText);
                 if (arrayOfLinks.length !== 0) {
                     thread.links.push({
                         postNo: i,
@@ -163,31 +189,51 @@ export let analyser = {
 
     time(threadPosts) {
 
-            threadPosts.forEach((thread, i) => {
-                threadPosts[i].time_posted = thread.posts[0].time;
-            });
-            return threadPosts;
+        threadPosts.forEach((thread, i) => {
+            threadPosts[i].time_posted = thread.posts[0].time;
+        });
+        return threadPosts;
     },
 
     generateCryptoRandomNumber(min, max) {
         return helper.crypto(min, max);
+    },
+    save(connectedClient = isRequired()) {
+        helper.saveWordList(connectedClient);
     }
 };
+
+
 
 let retrive = {
 
 }
 
-export let helper = {
+let helper = {
 
     //Remove html from HTML text
-    removeHTML(html) { 
-        let div = document.createElement("div");
-        div.innerHTML = html;
-        let text = div.innerText || div.textContent || "";
+    removeHTML(html) {
+        let text = striptags(html);
 
         //Remove ALL punctuation from a sentence in order for the word counter to work.
         text = text.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g, " ");
+        return text;
+    },
+
+    stripPost(html, removePunctuation = true) {
+
+        if (!html) { return '' }
+        let text = html.replace(/<br>/g, ' ').replace(/<[^>]+>/g, ''); //Remove line-breaks then remove html
+
+        text = he.decode(text); //decode html entities to characters e.g. $gt; would equal >
+
+        text = text.replace(/>/g, '> '); //Add a space to seperate green text marker and words.
+
+        if (removePunctuation) {
+            //Remove ALL punctuation from a sentence in order for the word counter to work.
+            text = text.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g, " ");
+        }
+
         return text;
     },
 
@@ -209,7 +255,7 @@ export let helper = {
         return Math.floor(result * (max - min + 1) + min);
     },
 
-    countWords(str, unique) {
+    countWords(str, unique = false) {
         str = str.replace(/(^\s*)|(\s*$)/gi, "");//exclude  start and end white-space
         str = str.replace(/[ ]{2,}/gi, " ");//2 or more space to 1
         str = str.replace(/\n /, "\n"); // exclude newline with a start spacing
@@ -227,26 +273,50 @@ export let helper = {
         str = str.replace(/[ ]{2,}/gi, " ");//2 or more space to 1
         str = str.replace(/\n /, "\n"); // exclude newline with a start spacing
 
-        let counter = 0;
         if (!allWords) {
-            let wordsStore = localforageInit.wordStore();
-            await wordsStore.getItem("allWords").then((words) => {
-                allWords = words.map(word => word.toLowerCase().trim());
-            }).catch(function (err) {
-                // This code runs if there were any errors
-                console.log(err);
-                return err;
+
+            let client = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true',
+                { useNewUrlParser: true });
+
+            let db = client.db('crypto');
+            let words = await db.collection('words').find({
+                name: 'wordArray'
+            }).project({
+                words: 1, _id: 0
+            }).limit(1);
+            await words.forEach(doc => {
+                allWords = doc.words;
             });
         }
 
+        let wordArray = new Set();
         str.split(' ').forEach((str, i, array) => {
 
             str = str.toLowerCase();
             if (allWords.includes(str) && str !== "") {
-                counter++;
+                wordArray.add(str);
             }
         });
-        return counter;
+
+        return wordArray.size;
+    },
+
+    saveWordList(connectedClient = isRequired()) {
+
+        let db = connectedClient.db('crypto');
+        let filePath = path.join(__dirname, 'words.txt');
+        let allWords = [];
+
+        let content = fs.readFileSync(filePath, 'utf8');
+        content = content.split('\n');
+        allWords = content.map(word => word.toLowerCase().trim());
+
+        db.collection('words').insertOne({
+            words: allWords,
+            name: 'wordArray'
+        });
     }
 
 }
+
+module.exports = analyser;
