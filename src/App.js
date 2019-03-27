@@ -6,7 +6,6 @@ import { DataAnalyser } from './Components/DataAnalyser.js';
 import { PostSelectors } from './Components/PostSelectors.js';
 
 const _ = require("underscore");
-const localforage = require('localforage');
 
 const corsProxy = "https://cors-proxy-0.herokuapp.com/";
 const board = "biz";
