@@ -114,7 +114,7 @@ class DataAnalyser {
             });
 
         Promise.all([b]).then(values => {
-            this.updateThreadStateDEBUGMODE(threadPosts);
+            // this.updateThreadStateDEBUGMODE(threadPosts);
 
             threadPosts = this.rate(threadPosts);
             threadPosts = _.sortBy(threadPosts, (thread) => thread.rating).reverse()

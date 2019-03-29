@@ -44,6 +44,8 @@ class App extends Component {
 
   async fetchBoardCatalog() {
     //Retrive the latest /biz/ catalog
+    this.prepareData();
+    return;
     let url = corsProxy + "https://a.4cdn.org/" + board + "/catalog.json";
 
     try {
@@ -53,7 +55,7 @@ class App extends Component {
         this.setState({
           catalog: jsonResponse
         });
-        this.prepareData();
+        
       }
     } catch (e) {
       console.log(e);

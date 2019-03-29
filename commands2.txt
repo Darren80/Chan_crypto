@@ -8,6 +8,8 @@ db.createUser(
 
 mongo -u AdminDarren -p --authenticationDatabase admin
 
+sudo journalctl -f -u myapp
+
 db.grantRolesToUser('AdminDarren',[{ role: "root", db: "admin" }])
 
 ssh root@cryptostar.ga

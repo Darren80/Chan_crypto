@@ -10,6 +10,7 @@ import { Timeline } from './display/timeline.js';
 
 require('vis/dist/vis.css');
 const vis = require('vis');
+const _ = require("underscore");
 
 const corsProxy = "https://cors-proxy-0.herokuapp.com/";
 
@@ -52,6 +53,7 @@ export class PostSelectors extends React.Component {
     if (!threadPosts[postIndex]) { return };
     let tim = threadPosts[postIndex].posts[0].tim;
     let ext = threadPosts[postIndex].posts[0].ext;
+
 
     if (this.props.postIndex !== prevProps.postIndex) {
       this.getImage(tim, ext);
@@ -320,19 +322,22 @@ export class PostSelectors extends React.Component {
 
     let renderSelectors = (e, direction) => {
 
+      console.log(threadPosts[postIndex]);
       let title = threadPosts[postIndex].posts[0].sub;
       let description = threadPosts[postIndex].posts[0].com;
       let rating = Math.fround(threadPosts[postIndex].rating);
       let tim = threadPosts[postIndex].posts[0].tim;
       let ext = threadPosts[postIndex].posts[0].ext;
+
       let hours = Math.abs(new Date(this.props.threadKey) - new Date(tim)) / 36e5;
       hours = hours.toFixed(1);
+      let postCount = threadPosts[postIndex].posts[0].length;
 
       return (
         <div className="post" key={postIndex}>
           {backgroundImageStyles()}
           {progressPercent()}
-          <h1>Thread #{postIndex + 1} {hours}</h1>
+          <h1>Thread #{postIndex + 1} | Replies: {postCount}</h1>
           <h2>{`${title || ''} ${rating}`}</h2>
           <p className="post-image-link">{`https://i.4cdn.org/biz/${tim}${ext}`}</p>
           <p className="post-text" dangerouslySetInnerHTML={{ __html: description }}></p>

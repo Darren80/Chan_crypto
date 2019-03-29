@@ -1,3 +1,6 @@
+const shell = require('shelljs');
+const process = require('process');
+
 const Posts = require('./GetAllPosts');
 const fetch = require('node-fetch');
 const crypto = require('crypto');
@@ -12,6 +15,11 @@ const analyser = require('./dataAnalyser');
 
 loginToMongo();
 
+if (process.pid && shell.which('renice')) {
+    shell.exec(`renice -n 10 -p ${process.pid}`);
+    console.log("Process re-niced");
+}
+
 function loginToMongo() {
     MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
         useNewUrlParser: true
@@ -24,10 +32,11 @@ function loginToMongo() {
         // db.collection('archiveThreads').createIndex({ date: -1 }, { unique: true });
         // db.collection('computedThreads').createIndex({ date: -1 }, { unique: true });
 
+        updateTXT();
         updater(0);
         // skipToStep2();
         // skipToStep3();
-        // debug();
+        debug();
     });
 }
 
@@ -65,12 +74,25 @@ async function skipToStep3() {
     new analyser(threads.date, threads.threads, connectedClient);
 }
 
+var date = Date.now();
 function updater(delta) {
-    console.log(`Time till next update ${delta} minutes`);
+    console.log(`Time till next update ${delta} minutes.`);
+    
     setTimeout(() => {
         fetchBoardCatalog();
-        updater(utils.cryptoRandom(15, 30)); //Generate a random time between 10 and 30 minutes to make the timing of retrivals more unpredicatable.
+
+        let updateDelta = utils.cryptoRandom(15, 30); //Generate a random time between 10 and 30 minutes to make the timing of retrivals more unpredicatable.
+        date = Date.now() + (updateDelta * 60000);
+
+        updater(updateDelta);
     }, delta * 60000);
+
+
+}
+function updateTXT() {
+    setInterval(() => {
+        console.log(`Time till next update ${(new Date(date) - new Date()) / 1000 / 60} minutes.`);
+    }, 120000);
 }
 
 
