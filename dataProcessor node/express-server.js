@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'build'),
       if (mimeType === 'text/html') {
         res.setHeader('Cache-Control', 'public, max-age=0')
       } else if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
-        res.setHeader('Cache-Control', `public, max-age=${ms('28d')}, immutable`)
+        res.setHeader('Cache-Control', `public, max-age=12000, immutable`)
       }
     }
   }));
