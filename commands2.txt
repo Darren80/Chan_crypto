@@ -8,7 +8,7 @@ db.createUser(
 
 mongo -u AdminDarren -p --authenticationDatabase admin
 
-sudo journalctl -f -u myapp
+sudo journalctl -f -u githubhook
 
 db.grantRolesToUser('AdminDarren',[{ role: "root", db: "admin" }])
 

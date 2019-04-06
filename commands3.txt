@@ -14,12 +14,12 @@ sudo certbot --nginx --server https://acme-v02.api.letsencrypt.org/directory \
 
 sudo service nginx reload
 
+-L 9221:127.0.0.1:9233 `
 ssh -L 19999:127.0.0.1:19999 `
--L 9221:127.0.0.1:9236 `
 root@cryptostar.ga
 
 sudo netstat -ntlp
 
 # Powershell
 # Script to map a range of ports with ssh
-sh fsshmap.sh 9221 9240 root@cryptostar.ga
+sh fsshmap.sh 9229 9260 root@cryptostar.ga
