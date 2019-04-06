@@ -1,12 +1,17 @@
 const express = require('express');
+const vhost = require('vhost');
 const compression = require('compression')
 const path = require('path');
 const mime = require('mime-types')
+
+const os = require('os');
 const ms = require('ms');
 // const fetch = require('node-fetch');
-const cors = require('cors')
-const app = express();
+var cors = require('cors');
 const _ = require("underscore");
+
+const app = express();
+const owaspApp = express();
 
 const MongoClient = require('mongodb').MongoClient
 let connectedClient;
@@ -18,31 +23,42 @@ function loginToMongo() {
   });
 }
 
-app.use(compression())
-app.use(express.static(path.join(__dirname, 'build'),
-  {
-    immutable: true,
-    maxAge: '10m',
-    setHeaders: (res, path) => {
-      let mimeType = mime.lookup(path);
-
-      if (mimeType === 'text/html') {
-        res.setHeader('Cache-Control', 'public, max-age=0')
-      } else if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
-        res.setHeader('Cache-Control', `public, max-age=12000, immutable`)
-      }
-    }
-  }));
-
-let corsOptions = {
-  origin: 'http://localhost:3000',
+var corsOptions = {
+  origin: '*',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-const server = app.listen(3000, () => console.log("Server started."));
+app.use(compression());
+owaspApp.use(compression());
 
-// app.get('/', function (req, res) {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get('/', cors(corsOptions), async (req, res, next) => {
+    console.log(os.homedir());
+    next();
+  });
+
+app.use('/', express.static(path.join(__dirname, 'build'),
+  {
+    setHeaders: (res, path) => {
+      let mimeType = mime.lookup(path);
+
+      if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
+        res.setHeader('Cache-Control', `public, max-age=${ms('60')}, immutable`);
+      } else {
+        res.setHeader('Cache-Control', `public, max-age=${ms('5')}, immutable`);
+      }
+    }
+  }));
+  
+
+  // owaspApp.use(function (req, res, next) {
+  //   console.log(req);
+  
+  //   next();
+  // })
+
+owaspApp.use(express.static(path.join(os.homedir(), 'CheatSheetSeries-master/generated/site')));
+// owaspApp.get('/', async (req, res, next) => {
+//   res.sendFile(path.join(os.homedir(), 'CheatSheetSeries-master/generated/site/index.html'));
 // });
 
 app.get('/loaderio', function (req, res) {
@@ -64,13 +80,22 @@ app.get('/api', cors(corsOptions), async (req, res) => {
     document.date = doc.date;
   });
   //Assuming threads is an array
-  document.threads = document.threads//.slice(0, 45);
+  // document.threads = document.threads.slice(0, 45);
 
   res.set({
-    'Cache-Control': 'public, max-age=180, immutable'
+    'Cache-Control': 'public, max-age=60, immutable'
   });
+
   res.json(document);
 });
+
+const mainApp = express();
+
+mainApp.use(vhost('*.cryptostar.ga', owaspApp));
+mainApp.use(vhost('cryptostar.ga', app));
+// mainApp.use(vhost('cryptostar.ga', app));
+
+const server = mainApp.listen(3000, () => console.log("Server started."));
 
 process.on('SIGINT', () => {
   console.info('SIGINT signal received.');

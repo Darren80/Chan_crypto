@@ -13,6 +13,7 @@ sudo journalctl -f -u myapp
 db.grantRolesToUser('AdminDarren',[{ role: "root", db: "admin" }])
 
 ssh root@cryptostar.ga
+ssh root@167.99.195.184
 
 ssh -L 9221:localhost:9229 root@cryptostar.ga
 

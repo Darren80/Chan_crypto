@@ -121,7 +121,7 @@ class DataAnalyser {
 
             this.updateThreadStateDEBUGMODE(threadPosts);
             // this.updateThreadStateAndMakeUserSafe(threadPosts);
-            console.log(threadPosts);
+            // console.log(threadPosts);
         })
 
 
