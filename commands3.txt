@@ -1,0 +1,25 @@
+sudo certbot --server https://acme-v02.api.letsencrypt.org/directory \
+-d *.cryptostar.ga -d cryptostar.ga \
+--preferred-challenges dns-01 --rsa-key-size 4096 certonly \
+--dns-cloudflare \
+--dns-cloudflare-credentials $HOME/.secrets/cloudflare.ini \
+--dns-cloudflare-propagation-seconds 6
+
+sudo certbot --nginx --server https://acme-v02.api.letsencrypt.org/directory \
+-d *.cryptostar.ga -d cryptostar.ga \
+--preferred-challenges dns-01 --rsa-key-size 4096 \
+--dns-cloudflare \
+--dns-cloudflare-credentials $HOME/.secrets/cloudflare.ini \
+--dns-cloudflare-propagation-seconds 6
+
+sudo service nginx reload
+
+ssh -L 19999:127.0.0.1:19999 `
+-L 9221:127.0.0.1:9236 `
+root@cryptostar.ga
+
+sudo netstat -ntlp
+
+# Powershell
+# Script to map a range of ports with ssh
+sh fsshmap.sh 9221 9240 root@cryptostar.ga
