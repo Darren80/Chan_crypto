@@ -41,10 +41,12 @@ app.use('/', express.static(path.join(__dirname, 'build'),
     setHeaders: (res, path) => {
       let mimeType = mime.lookup(path);
 
-      if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
-        res.setHeader('Cache-Control', `public, max-age=${ms('60')}, immutable`);
+      if (mimeType.includes('html')) {
+        res.setHeader('Cache-Control', `public, max-age=${0}`);
+      } else if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
+        res.setHeader('Cache-Control', `public, max-age=${31536000}, immutable`);
       } else {
-        res.setHeader('Cache-Control', `public, max-age=${ms('5')}, immutable`);
+        res.setHeader('Cache-Control', `public, max-age=${31536000}, immutable`);
       }
     }
   }));
