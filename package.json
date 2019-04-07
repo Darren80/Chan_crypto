@@ -32,6 +32,7 @@
     "sqlite3": "^4.0.4",
     "striptags": "^3.1.1",
     "underscore": "^1.9.1",
+    "vhost": "^3.0.2",
     "vis": "^4.21.0"
   },
   "scripts": {
