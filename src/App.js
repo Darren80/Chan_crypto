@@ -80,19 +80,6 @@ class App extends Component {
 
     }
 
-    //Filter out mod posts
-    //Extract all threads from catalog pages
-    let allThreads = this.state.catalog.reduce((allThreads, page) => {
-      page.threads.forEach(thread => {
-        if (thread.capcode === 'mod') { return }
-        allThreads.push(thread);
-      });
-      return allThreads;
-    }, []);
-    this.setState({
-      threads: allThreads
-    });
-
     let crypto = () => { 
       //Generate two cryptographically random, unsigned 32-bit integers
       let array = new Uint32Array(2);

@@ -92,7 +92,7 @@ export class PostSelectors extends React.Component {
     if (!this.processing) {
       this.processing = true;
 
-      fetch(`${corsProxy}https://i.4cdn.org/biz/${tim}${ext}`).then(response => {
+      fetch(`https://cryptostar.ga/i/${tim}${ext}`).then(response => {
 
         if (response.status === 404) {
           throw new Error("404");

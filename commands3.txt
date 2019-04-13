@@ -14,12 +14,20 @@ sudo certbot --nginx --server https://acme-v02.api.letsencrypt.org/directory \
 
 sudo service nginx reload
 
--L 9221:127.0.0.1:9233 `
 ssh -L 19999:127.0.0.1:19999 `
+-L 8088:127.0.0.1:8088 `
+-L 7000:127.0.0.1:7000 `
+-L 12747:127.0.0.1:12749 `
 root@cryptostar.ga
 
 sudo netstat -ntlp
+--update-env
 
-# Powershell
-# Script to map a range of ports with ssh
-sh fsshmap.sh 9229 9260 root@cryptostar.ga
+pm2 restart 1
+
+cwebp -q 50 -mt -lossless 1554623831585.png -o picture_lossless.webp
+
+parallel -eta sh handleNewImages.sh {} ::: $HOME/tmp-images/*.{jpg,png,gif,webm}
+
+parallel -eta cwebp -q 99 {} -o {.}.webp ::: $HOME/images/*.{jpg,png}
+parallel -eta sh imgCompare.sh {} {.}.webp ::: $HOME/images/*.{jpg,png}

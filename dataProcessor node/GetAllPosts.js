@@ -1,7 +1,9 @@
 const fetch = require('node-fetch'),
-      fs = require('fs'),
-      path = require('path'),
-      analyser = require('./dataAnalyser');
+  fs = require('fs'),
+  request = require('request'),
+  os = require('os'),
+  analyser = require('./dataAnalyser'),
+  shell = require('shelljs');
 
 let connectedClient;
 
@@ -20,7 +22,7 @@ class Posts {
   }
 
   async getFullThreads() {
-      await getAllPosts(this.partialThreads);
+    await getAllPosts(this.partialThreads);
   }
 }
 
@@ -40,7 +42,9 @@ async function getAllPosts(partialThreads) {
     setTimeout(async () => {
       console.log(index);
 
+      getThreadImage(thread.tim, thread.ext);
       let threadPosts = await getThreadPosts(thread.no);
+
       fullThreads[index] = threadPosts;
       itemsProcessed++;
 
@@ -49,6 +53,10 @@ async function getAllPosts(partialThreads) {
         this.retrivalTime = Date.now();
         saveThreadToDB(this.retrivalTime, fullThreads);
         getAllPostsCallback(this.retrivalTime, fullThreads);
+
+        //Optimise all images via lossless compression
+        shell.exec('parallel -eta sh handleNewImages.sh {} ::: $HOME/tmp-images/*.{jpg,png,gif,webm}');
+
       }
 
     }, index * 500);
@@ -62,14 +70,11 @@ function getAllPostsCallback(dateOfSnapshot, fullThreads) {
 function saveThreadToDB(dateOfSnapshot, fullThreads) {
 
   let db = connectedClient.db('crypto');
-  
 
   db.collection('archiveThreads').insertOne({
     date: dateOfSnapshot,
     threads: fullThreads
   });
-
-  
 }
 
 async function getThreadPosts(threadNo) {
@@ -86,6 +91,27 @@ async function getThreadPosts(threadNo) {
   } catch (e) {
     console.log(e);
   }
+}
+
+async function getThreadImage(tim, ext) {
+
+  let download = (uri, filename, callback) => {
+
+    if (fs.existsSync(`${os.homedir()}/images/${filename}`)) {
+      return;
+    }
+
+    request.head(uri, function (err, res, body) {
+      console.log('content-type:', res.headers['content-type']);
+      console.log('content-length:', res.headers['content-length']);
+
+      request(uri).pipe(fs.createWriteStream(`${os.homedir()}/tmp-images/${filename}`)).on('close', callback);
+    });
+  };
+  
+  download(`https://i.4cdn.org/biz/${tim}${ext}`, `${tim}${ext}`,() => {
+    console.log('done');
+  });
 }
 
 module.exports = Posts;

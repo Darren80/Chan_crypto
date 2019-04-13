@@ -1,8 +1,17 @@
 const express = require('express');
 const vhost = require('vhost');
-const compression = require('compression')
+const compression = require('compression');
 const path = require('path');
-const mime = require('mime-types')
+const mime = require('mime-types');
+const bodyParser = require("body-parser");
+
+const imagemin = require('imagemin');
+const imageminOptipng = require('imagemin-optipng');
+const imageminJpegtran = require('imagemin-jpegtran');
+const imageminGifsicle = require('imagemin-gifsicle');
+
+require('jpegtran-bin');
+const globby = require('globby');
 
 const os = require('os');
 const ms = require('ms');
@@ -23,18 +32,49 @@ function loginToMongo() {
   });
 }
 
-var corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  res.header('Access-Control-Expose-Headers', 'Content-Length');
+  res.header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, X-Requested-With, Range');
+  if (req.method === 'OPTIONS') {
+    return res.send(200);
+  } else {
+    return next();
+  }
+});
 
 app.use(compression());
 owaspApp.use(compression());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.get('/', cors(corsOptions), async (req, res, next) => {
-    console.log(os.homedir());
-    next();
+app.post('/compress', async (req, res, next) => {
+
+  imagemin([`${os.homedir()}/tmp-images/${req.body.filename}`], `${os.homedir()}/images/`, {
+    plugins: [imageminJpegtran({
+      progressive: true
+    }),
+    imageminOptipng({
+      optimizationLevel: 2
+    }),
+    imageminGifsicle({
+      interlaced: true
+    })]
+  }).then((files) => {
+    res.send('Image optimised.');
+  }).catch(err => {
+    res.statusCode(404);
+    console.log(err);
   });
+});
+
+app.use('/i', express.static(path.join(os.homedir(), 'images'), {
+  setHeaders: (res, path) => {
+    res.setHeader('Cache-Control', `public, max-age=${31536000}, immutable`);
+  }
+}));
 
 app.use('/', express.static(path.join(__dirname, 'build'),
   {
@@ -42,7 +82,7 @@ app.use('/', express.static(path.join(__dirname, 'build'),
       let mimeType = mime.lookup(path);
 
       if (mimeType.includes('html')) {
-        res.setHeader('Cache-Control', `public, max-age=${0}`);
+        res.setHeader('Cache-Control', `public, max-age=${10}`);
       } else if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
         res.setHeader('Cache-Control', `public, max-age=${31536000}, immutable`);
       } else {
@@ -50,13 +90,13 @@ app.use('/', express.static(path.join(__dirname, 'build'),
       }
     }
   }));
-  
 
-  // owaspApp.use(function (req, res, next) {
-  //   console.log(req);
-  
-  //   next();
-  // })
+
+// owaspApp.use(function (req, res, next) {
+//   console.log(req);
+
+//   next();
+// })
 
 owaspApp.use(express.static(path.join(os.homedir(), 'CheatSheetSeries-master/generated/site')));
 // owaspApp.get('/', async (req, res, next) => {
@@ -67,7 +107,7 @@ app.get('/loaderio', function (req, res) {
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
-app.get('/api', cors(corsOptions), async (req, res) => {
+app.get('/api', async (req, res) => {
 
   if (!connectedClient) {
     connectedClient = await loginToMongo();
@@ -93,7 +133,7 @@ app.get('/api', cors(corsOptions), async (req, res) => {
 
 const mainApp = express();
 
-mainApp.use(vhost('*.cryptostar.ga', owaspApp));
+mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
 mainApp.use(vhost('cryptostar.ga', app));
 // mainApp.use(vhost('cryptostar.ga', app));
 

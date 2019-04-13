@@ -36,7 +36,7 @@ function loginToMongo() {
         updater(0);
         // skipToStep2();
         // skipToStep3();
-        debug();
+        // debug();
     });
 }
 

@@ -82,6 +82,7 @@ class DataAnalyser {
         // threadPosts = await analyser.fleschKincaid(threadPosts); //async //Unused
         // threadPosts = analyser.uniqueParticipants(threadPosts); //Unused
 
+        // analyser.save(connectedClient);
         threadPosts = analyser.time(threadPosts);
         threadPosts = analyser.links(threadPosts);
         threadPosts = analyser.ticker(threadPosts);
