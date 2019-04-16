@@ -17,7 +17,6 @@ sudo service nginx reload
 ssh -L 19999:127.0.0.1:19999 `
 -L 8088:127.0.0.1:8088 `
 -L 7000:127.0.0.1:7000 `
--L 12747:127.0.0.1:12749 `
 root@cryptostar.ga
 
 sudo netstat -ntlp
@@ -31,3 +30,6 @@ parallel -eta sh handleNewImages.sh {} ::: $HOME/tmp-images/*.{jpg,png,gif,webm}
 
 parallel -eta cwebp -q 99 {} -o {.}.webp ::: $HOME/images/*.{jpg,png}
 parallel -eta sh imgCompare.sh {} {.}.webp ::: $HOME/images/*.{jpg,png}
+
+
+Application key B2: K002LLq0F1XKgUvljWAo3qW+yfPYsA4

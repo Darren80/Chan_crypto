@@ -65,7 +65,7 @@ app.post('/compress', async (req, res, next) => {
   }).then((files) => {
     res.send('Image optimised.');
   }).catch(err => {
-    res.statusCode(404);
+    res.sendStatus(404);
     console.log(err);
   });
 });

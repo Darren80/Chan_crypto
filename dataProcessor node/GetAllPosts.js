@@ -40,7 +40,7 @@ async function getAllPosts(partialThreads) {
 
     //Limit polling to 1 every 0.5 seconds
     setTimeout(async () => {
-      console.log(index);
+      console.log(index + 1);
 
       getThreadImage(thread.tim, thread.ext);
       let threadPosts = await getThreadPosts(thread.no);
@@ -55,14 +55,16 @@ async function getAllPosts(partialThreads) {
         getAllPostsCallback(this.retrivalTime, fullThreads);
 
         //Optimise all images via lossless compression
-        shell.exec('parallel -eta sh handleNewImages.sh {} ::: $HOME/tmp-images/*.{jpg,png,gif,webm}');
+        console.log('Executing script.');
+        shell.exec('bash $HOME/startImgOpti.sh', (code, output, stderr) => {
+          shell.echo(`exit code: ${code}`);
+        });
 
       }
 
     }, index * 500);
   });
 }
-
 function getAllPostsCallback(dateOfSnapshot, fullThreads) {
   new analyser(dateOfSnapshot, fullThreads, connectedClient);
 }

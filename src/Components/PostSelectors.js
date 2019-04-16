@@ -85,14 +85,14 @@ export class PostSelectors extends React.Component {
   processing = false;
   downloading = false;
 
-  async getImage(tim, ext) {
+  async getImage(tim, ext, url) {
     let imageStr;
     let that = this;
 
     if (!this.processing) {
       this.processing = true;
 
-      fetch(`https://cryptostar.ga/i/${tim}${ext}`).then(response => {
+      fetch(`https://images.cryptostar.ga/file/lon1-static/images/${tim}${ext}`).then(response => {
 
         if (response.status === 404) {
           throw new Error("404");
@@ -340,6 +340,8 @@ export class PostSelectors extends React.Component {
           <h1>Thread #{postIndex + 1} | Replies: {postCount}</h1>
           <h2>{`${title || ''} ${rating}`}</h2>
           <p className="post-image-link">{`https://i.4cdn.org/biz/${tim}${ext}`}</p>
+          <p className="post-image-link">{`https://f002.backblazeb2.com/file/lon1-static/images/${tim}${ext}`}</p>
+          
           <p className="post-text" dangerouslySetInnerHTML={{ __html: description }}></p>
         </div>
       );
