@@ -8,6 +8,8 @@ import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from
 import { localforageInit } from './utils/initLocalforage';
 import { Timeline } from './display/timeline.js';
 
+import quicklink from "quicklink/dist/quicklink.mjs";
+
 require('vis/dist/vis.css');
 const vis = require('vis');
 const _ = require("underscore");
@@ -237,7 +239,7 @@ export class PostSelectors extends React.Component {
         });
 
         console.log(data);
-        
+
         let items = new vis.DataSet(data);
         timeline.setItems(items);
       }
@@ -322,12 +324,18 @@ export class PostSelectors extends React.Component {
 
     let renderSelectors = (e, direction) => {
 
-      console.log(threadPosts[postIndex]);
+      console.log(threadPosts);
       let title = threadPosts[postIndex].posts[0].sub;
       let description = threadPosts[postIndex].posts[0].com;
       let rating = Math.fround(threadPosts[postIndex].rating);
+
       let tim = threadPosts[postIndex].posts[0].tim;
       let ext = threadPosts[postIndex].posts[0].ext;
+
+      let preloadTim1 = threadPosts[postIndex === 0 ? threadPosts.length - 1 : postIndex].posts[0].tim;
+      let preloadExt1 = threadPosts[postIndex === 0 ? threadPosts.length - 1 : postIndex].posts[0].tim;
+      let preloadTim2 = threadPosts[postIndex === threadPosts.length - 1 ? 0 : postIndex].posts[0].tim;
+      let preloadExt2 = threadPosts[postIndex === threadPosts.length - 1 ? 0 : postIndex].posts[0].tim;
 
       let hours = Math.abs(new Date(this.props.threadKey) - new Date(tim)) / 36e5;
       hours = hours.toFixed(1);
@@ -339,10 +347,10 @@ export class PostSelectors extends React.Component {
           {progressPercent()}
           <h1>Thread #{postIndex + 1} | Replies: {postCount}</h1>
           <h2>{`${title || ''} ${rating}`}</h2>
-          <p className="post-image-link">{`https://i.4cdn.org/biz/${tim}${ext}`}</p>
-          <p className="post-image-link">{`https://f002.backblazeb2.com/file/lon1-static/images/${tim}${ext}`}</p>
-          
+          <p className="post-image-link"><a href={`https://images.cryptostar.ga/file/lon1-static/images/${preloadTim1}${preloadExt1}`}></a></p>
+          <p className="post-image-link"><a href={`https://images.cryptostar.ga/file/lon1-static/images/${preloadTim2}${preloadExt2}`}></a></p>
           <p className="post-text" dangerouslySetInnerHTML={{ __html: description }}></p>
+          {quicklink()}
         </div>
       );
     };

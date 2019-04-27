@@ -2,6 +2,9 @@ const shell = require('shelljs');
 const process = require('process');
 
 const Posts = require('./GetAllPosts');
+const config = require('./config');
+
+
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 const _ = require("underscore");
@@ -77,7 +80,7 @@ async function skipToStep3() {
 var date = Date.now();
 function updater(delta) {
     console.log(`Time till next update ${delta} minutes.`);
-    
+
     setTimeout(() => {
         fetchBoardCatalog();
 
@@ -95,20 +98,29 @@ function updateTXT() {
     }, 120000);
 }
 
+async function fetchBoardCatalog(i = 0) {
+    //Retrive the latest /biz/ catalog, with fallback urls
 
-async function fetchBoardCatalog() {
-    //Retrive the latest /biz/ catalog
-    let url = corsProxy + "https://a.4cdn.org/" + board + "/catalog.json";
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(config.catalogUrls[i]);
+
         if (response.ok) {
             const jsonResponse = await response.json();
             let catalog = jsonResponse;
+
             prepareCatalog(catalog);
+        } else {
+            throw new Error(`Error, response code = ${response.status}`);
         }
     } catch (e) {
         console.log(e);
+
+        if (i === config.catalogUrls.length - 1) { 
+            return `All the url's tried failed, no more fallback url's avaliable: ${e}`;
+        } else {
+            fetchBoardCatalog(i + 1);
+        }
     }
 }
 

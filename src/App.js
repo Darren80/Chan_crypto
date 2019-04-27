@@ -64,7 +64,7 @@ class App extends Component {
 
   async prepareData() {
 
-    let url = "https://cryptostar.ga/api";
+    let url = "https://cryptostar.ga/api/threads";
     try {
       const response = await fetch(url);
       if (response.ok) {

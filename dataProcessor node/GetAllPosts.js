@@ -2,11 +2,14 @@ const fetch = require('node-fetch'),
   fs = require('fs'),
   request = require('request'),
   os = require('os'),
-  analyser = require('./dataAnalyser'),
   shell = require('shelljs');
 
-let connectedClient;
+const analyser = require('./dataAnalyser'),
+      config = require('./config');
 
+
+let connectedClient;
+let data = '';
 
 
 class Posts {
@@ -32,6 +35,15 @@ async function getAllPosts(partialThreads) {
   //   // array does not exist, is not an array, or is empty
   //   return;
   // }
+
+  if (shell.exec('rclone ls lon1:lon1-static/images | tee $HOME/images-list.txt').code !== 0) {
+
+    console.log('Image-list update failed on: ', shell.exec('date'));
+    shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images-list-status.txt');
+
+  }
+
+  data = fs.readFileSync(`${os.homedir()}/images-list.txt`);
 
   let itemsProcessed = 0;
   let fullThreads = [];
@@ -79,19 +91,25 @@ function saveThreadToDB(dateOfSnapshot, fullThreads) {
   });
 }
 
-async function getThreadPosts(threadNo) {
-  let corsProxy = "https://cors-proxy-0.herokuapp.com/";
-  let board = "biz";
-  let url = corsProxy + "https://a.4cdn.org/" + board + "/thread/" + threadNo + ".json";
+async function getThreadPosts(threadNo, i = 0) {
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(config.postUrls[i] + threadNo + ".json");
+
     if (response.ok) {
       const jsonResponse = await response.json();
       return jsonResponse;
+    } else {
+      throw new Error(`Error, response code = ${response.status}`);
     }
   } catch (e) {
     console.log(e);
+
+    if (i === config.postUrls.length - 1) {
+      return `All the url's tried failed, no more fallback url's avaliable: ${e}`;
+    } else {
+      return await getThreadPosts(i + 1);
+    }
   }
 }
 
@@ -99,7 +117,7 @@ async function getThreadImage(tim, ext) {
 
   let download = (uri, filename, callback) => {
 
-    if (fs.existsSync(`${os.homedir()}/images/${filename}`)) {
+    if (data.includes(filename)) {
       return;
     }
 
@@ -110,8 +128,8 @@ async function getThreadImage(tim, ext) {
       request(uri).pipe(fs.createWriteStream(`${os.homedir()}/tmp-images/${filename}`)).on('close', callback);
     });
   };
-  
-  download(`https://i.4cdn.org/biz/${tim}${ext}`, `${tim}${ext}`,() => {
+
+  download(`https://i.4cdn.org/biz/${tim}${ext}`, `${tim}${ext}`, () => {
     console.log('done');
   });
 }

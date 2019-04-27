@@ -26,11 +26,12 @@ const MongoClient = require('mongodb').MongoClient
 let connectedClient;
 let cryptoDB;
 
-function loginToMongo() {
-  return MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
+(async () => { //Login to mongoDB
+  connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
     useNewUrlParser: true
   });
-}
+  cryptoDB = connectedClient.db('crypto');
+}) ();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
@@ -107,11 +108,10 @@ app.get('/loaderio', function (req, res) {
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
-app.get('/api', async (req, res) => {
+app.get('/api/threads', async (req, res) => {
 
   if (!connectedClient) {
-    connectedClient = await loginToMongo();
-    cryptoDB = connectedClient.db('crypto');
+    throw new Error('mongoDB database not connected.')
   }
 
   let cursor = await cryptoDB.collection('computedThreads').find().sort({ date: -1 }).limit(1);
@@ -129,6 +129,28 @@ app.get('/api', async (req, res) => {
   });
 
   res.json(document);
+});
+
+app.get('/api/timeline', async (req, res) => {
+
+  let past7days = new Date();
+  past7days.setDate(past7days.getDate() - 7);
+
+  let computedCollection = await cryptoDB.collection('computedThreads');
+  let cursor = await computedCollection.find({ date: {gt: past7days.getTime() } }, { date: 1 }).limit(10000);
+
+  let acrhivalDates = [];
+  await cursor.forEach(date => {
+    acrhivalDates.push(date);
+    console.log(date);
+  })
+
+  // res.set({
+  //   'Cache-Control': 'public, max-age=60, immutable'
+  // });
+
+  res.json(acrhivalDates);
+
 });
 
 const mainApp = express();

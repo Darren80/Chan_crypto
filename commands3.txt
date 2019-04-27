@@ -17,7 +17,18 @@ sudo service nginx reload
 ssh -L 19999:127.0.0.1:19999 `
 -L 8088:127.0.0.1:8088 `
 -L 7000:127.0.0.1:7000 `
-root@cryptostar.ga
+-L 7001:127.0.0.1:9236 `
+root@ssh.cryptostar.ga
+
+ssh root@192.168.0.25
+
+sysbench --test=cpu --cpu-max-prime=20000 run
+
+journalctl -fue gitwatch
+
+#Update partition table without rebooting
+partprobe /dev/sdX
+df -aTh
 
 sudo netstat -ntlp
 --update-env
