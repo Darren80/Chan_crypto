@@ -24,27 +24,46 @@ export class Timeline extends React.Component {
 
 
         let keys = [];
-        keys = await localforageInit.retriveAllUNIXKeys();
-        
+
         let generateFakeKeys = () => {
-            let startDate = new Date('2019-01-01T00:00:00');
+            let startDate = new Date('2019-11-01T00:00:00');
+            let keys = [];
 
             while (startDate.getFullYear() < 2020) {
                 startDate.setMinutes(startDate.getMinutes() + 30);
                 keys.push(startDate.getTime());
             }
+
+            return keys;
         }
-        
+
+        let getKeys = async () => {
+            try {
+                const response = await fetch('https://cryptostar.ga/api/timeline');
+                if (response.ok) {
+                    const responseJson = await response.json();
+
+                    return responseJson;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        //keys = await generateFakeKeys();
+        keys = await getKeys();
+
         let data = keys.map((UNIX, i) => {
-            UNIX = parseInt(UNIX);
 
             let date = new Date(UNIX); let mins = ('0' + date.getMinutes()).slice(-2);
+
             let time24Hr = `${date.getHours()}:${mins}`;
 
             return { id: i, title: time24Hr, start: date, type: 'point' }
         });
 
         // Create a DataSet (allows two way data-binding)
+        console.log(data);
         let items = new vis.DataSet(data)
 
         // Configuration for the Timeline
@@ -70,9 +89,10 @@ export class Timeline extends React.Component {
         timeline.on('rangechanged', (properties) => {
 
             this.props.updateTimelineZoomLevel(properties);
-            
-            let startDate = new Date(Math.min(...keys));
-            let endDate = new Date(Math.max(...keys));
+
+            let startDate = new Date(keys[keys.length - 1]);
+            let endDate = new Date(keys[0]);
+
             let monthDifference = this.monthDiff(startDate, endDate);
 
             let start = new Date(properties.start);
@@ -96,44 +116,45 @@ export class Timeline extends React.Component {
                     itemsPerMonth = 192;
                     break;
                 case '1week':
-                    itemsPerMonth = 48;
+                    itemsPerMonth = 96;
                     break;
                 case '2week':
-                    itemsPerMonth = 24;
+                    itemsPerMonth = 48;
                     break;
                 case '1month':
-                    itemsPerMonth = 12;
+                    itemsPerMonth = 24;
                     break;
                 case '2month':
-                    itemsPerMonth = 6;
+                    itemsPerMonth = 12;
                     break;
                 case '1year':
-                    itemsPerMonth = 3;
+                    itemsPerMonth = 6;
                     break;
                 case '2year':
-                    itemsPerMonth = 1.5;
+                    itemsPerMonth = 3;
                     break;
                 default:
-                    itemsPerMonth = 0.75;
+                    itemsPerMonth = 1.5;
                     break;
             };
 
             let data = [];
 
-            let nthItem = Math.floor(keys.length / (monthDifference * itemsPerMonth)) > 0 || 1;
+            let nthItem = Math.floor(keys.length / (monthDifference * itemsPerMonth)) || 1;
+            console.log(nthItem);
 
             let monthItems = keys.reduce((items, key, i) => {
                 if (i % nthItem === 0) {
-                    let keyDate = new Date(parseInt(key));
+                    let keyDate = new Date(key);
                     let time24Hr = `${keyDate.getHours()}:${keyDate.getMinutes()}`;
                     let item = { id: key, title: `${time24Hr}`, start: keyDate, type: 'point', style: 'padding: 0.4rem' };
                     items.push(item);
                 }
                 return items;
             }, []);
-            
+
             data.push(monthItems);
-            // console.log(data);
+            console.log(data);
 
             data = data.flat();
 
@@ -144,10 +165,30 @@ export class Timeline extends React.Component {
 
         });
 
-        timeline.on('select',async (properties) => {
+        timeline.on('select', async (properties) => {
+            try {
+                let response = await fetch('https://cryptostar.ga/api/timeline', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date: properties.items[0]
+                    })
+                });
+
+                if (response.ok) {
+                    let responseJson = await response.json();
+                    this.props.handleData('posts', responseJson.threads, properties.items[0]);
+                    window.scroll(0,0);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+
             let key = Number(properties.items[0]);
             let allThreadPosts = await localforageInit.getItem(properties.items[0]);
-            this.props.handleData('posts', allThreadPosts, key);
+            // 
         });
     }
 

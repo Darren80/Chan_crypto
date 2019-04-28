@@ -57,8 +57,7 @@ button {
 }
 .post-text {
     width: 65%;
-    height: 400px;
-    overflow-y: scroll;
+    max-height: 2000px;
 }
 
 .Preamble {

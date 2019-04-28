@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 
 app.use(compression());
 owaspApp.use(compression());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.post('/compress', async (req, res, next) => {
@@ -134,24 +134,42 @@ app.get('/api/threads', async (req, res) => {
 app.get('/api/timeline', async (req, res) => {
 
   let past7days = new Date();
-  past7days.setDate(past7days.getDate() - 7);
+  let past14days = new Date();
 
-  let computedCollection = await cryptoDB.collection('computedThreads');
-  let cursor = await computedCollection.find({ date: {gt: past7days.getTime() } }, { date: 1 }).limit(10000);
+  past7days.setDate(past7days.getDate() - 7);
+  past14days.setDate(past14days.getDate() - 14);
+
+  let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() }}).project({ date: 1 }).limit(10000);
 
   let acrhivalDates = [];
-  await cursor.forEach(date => {
-    acrhivalDates.push(date);
-    console.log(date);
+  await computedCursor.forEach(date => {
+    acrhivalDates.push(new Date(date.date));
   })
 
   // res.set({
   //   'Cache-Control': 'public, max-age=60, immutable'
   // });
 
+  console.log(acrhivalDates);
+
   res.json(acrhivalDates);
 
 });
+
+app.post('/api/timeline', async (req, res) => {
+
+  let dateToFind = new Date(req.body.date);
+
+  let computedCursor = await cryptoDB.collection('computedThreads').find({ date: dateToFind.getTime() }).limit(1);
+
+  if (await computedCursor.count() === 0) {
+    res.status(404).json('That item does not exist.');
+  } else {
+    res.json(await computedCursor.forEach(foundDoc => {
+      res.json(foundDoc);
+    }));
+  }
+})
 
 const mainApp = express();
 

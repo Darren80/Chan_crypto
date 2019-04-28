@@ -22,7 +22,7 @@ class DataAnalyser {
     }
 
     async updateThreadStateDEBUGMODE(threadPosts) {
-        //Debug mode because algorithm metrics are exposed.
+        //Debug mode when algorithm metrics are exposed.
         let db = connectedClient.db('crypto');
 
         db.collection('computedThreads').updateOne({

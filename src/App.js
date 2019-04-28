@@ -15,7 +15,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      computed: 0,
       postIndex: 0,
       threadImage: '',
       imgDownloadPercent: 0,
@@ -70,7 +69,7 @@ class App extends Component {
       if (response.ok) {
         const responseJson = await response.json();
         this.setState({
-          computed: 1,
+          loaded: 1,
           threadPosts: responseJson.threads,
           threadKey: responseJson.date
         });
@@ -108,7 +107,7 @@ class App extends Component {
       this.setState({
         threadPosts: data,
         threadKey: key,
-        computed: 0
+        threadImage: ''
       });
     } else if (type === "cards") {
       this.setState({
@@ -121,8 +120,7 @@ class App extends Component {
       console.log(data);
       this.setState({
         threadPosts: data,
-        threadKey: key,
-        computed: 1
+        threadKey: key
       });
     }
 
@@ -170,10 +168,6 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-      </p>
           {/* <GetAllPosts
             threads={this.state.threads}
             handleData={this.handleData}
@@ -190,7 +184,7 @@ class App extends Component {
             deepaiApiKey={this.state.deepaiApiKey}
           /> */}
 
-          {this.state.computed && (<PostSelectors
+          {this.state.loaded && (<PostSelectors
 
             threadPosts={this.state.threadPosts}
             threadKey={this.state.threadKey}

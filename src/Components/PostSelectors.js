@@ -57,7 +57,7 @@ export class PostSelectors extends React.Component {
     let ext = threadPosts[postIndex].posts[0].ext;
 
 
-    if (this.props.postIndex !== prevProps.postIndex) {
+    if ((this.props.postIndex !== prevProps.postIndex) || this.props.threadKey !== prevProps.threadKey) {
       this.getImage(tim, ext);
     }
   }
@@ -324,7 +324,6 @@ export class PostSelectors extends React.Component {
 
     let renderSelectors = (e, direction) => {
 
-      console.log(threadPosts);
       let title = threadPosts[postIndex].posts[0].sub;
       let description = threadPosts[postIndex].posts[0].com;
       let rating = Math.fround(threadPosts[postIndex].rating);
@@ -366,6 +365,10 @@ export class PostSelectors extends React.Component {
     return (
       <div className="biz-card">
         <div id="0" className="Preamble">
+        
+          <Timeline {...this.props}
+          />
+
           <button onClick={() => this.props.updateIndex(this.props.postIndex - 10)}>Left 10</button>
           <button onClick={() => this.props.updateIndex(this.props.postIndex - 1)}>Left</button>
           <a href={`https://boards.4channel.org/biz/thread/${getLink()}`} target="_blank" rel="noopener noreferrer">
@@ -376,8 +379,7 @@ export class PostSelectors extends React.Component {
           {renderSelectors(0)}
 
         </div>
-        <Timeline {...this.props}
-        />
+
 
       </div>
 
