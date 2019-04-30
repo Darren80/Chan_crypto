@@ -24,7 +24,6 @@ export class PostSelectors extends React.Component {
     this.arrayBufferToBase64 = this.arrayBufferToBase64.bind(this);
     this.progress = this.progress.bind(this);
     this.nsfwReveal = this.nsfwReveal.bind(this);
-    this.createVisualisation = this.createVisualisation.bind(this);
   }
 
   async componentDidMount() {
@@ -162,117 +161,9 @@ export class PostSelectors extends React.Component {
     this.props.updateNsfw();
   }
 
-  async createVisualisation() {
-
-    // DOM element where the Timeline will be attached
-    let container = document.getElementById('timeline');
-    if (!container) { return }
-    if (container.querySelector('.vis-timeline')) { return }
-
-
-    // let keys = await localforageInit.retriveAllUNIXKeys();
-    let startDate = new Date('2019-01-01T00:00:00');
-    let keys = [];
-
-    while (startDate.getFullYear() < 2020) {
-      startDate.setDate(startDate.getDate() + 1);
-      keys.push(startDate.getTime());
-    }
-
-    let data = keys.map((UNIX, i) => {
-      UNIX = parseInt(UNIX);
-
-      let date = new Date(UNIX);
-      let time24Hr = `${date.getHours()}:${date.getMinutes()}`;
-
-      return { id: i, content: time24Hr, title: `#${i}`, start: new Date(UNIX), type: 'point' }
-    });
-
-    // Create a DataSet (allows two way data-binding)
-    let items = new vis.DataSet(data)
-
-    // Configuration for the Timeline
-    let options = {
-      height: '250px',
-      stack: false,
-      horizontalScroll: true,
-      zoomKey: 'ctrlKey',
-      zoomMin: 3600000,
-      zoomMax: 3.1556952e+11
-    };
-    // Create a Timeline
-    let times = {
-      hour: 3.6e+6,
-      day: 8.64e+7,
-      week: 6.048e+8,
-      month: 2.628e+9,
-      year: 3.154e+10,
-      decade: 3.154e+11
-    }
-    let timeline = new vis.Timeline(container, items, options);
-    timeline.on('rangechanged', (properties) => {
-
-      let startDate = new Date('2019-01-01T00:00:00');
-      let setKeys = (range) => {
-        let month1Keys = keys.filter(key => {
-          let keyDate = new Date(key);
-          if (keyDate.getUTCMonth() === startDate.getUTCMonth() && keyDate.getUTCFullYear() === startDate.getUTCFullYear()) {
-            console.log("1");
-            return key;
-          }
-          return false;
-        });
-
-        let length = Math.floor(month1Keys.length / 5);
-        month1Keys = month1Keys.filter((key, i) => {
-          if (i % length === 0) {
-            return true;
-          }
-        });
-
-        // Convert the UNIX timestamps into vis timeline items.
-        let data = month1Keys.map((key, i) => {
-          let keyDate = new Date(parseInt(key));
-
-          let time24Hr = `${keyDate.getHours()}:${keyDate.getMinutes()}`;
-          return { id: i, content: time24Hr, title: `#${i}`, start: keyDate, type: 'point' }
-        });
-
-        console.log(data);
-
-        let items = new vis.DataSet(data);
-        timeline.setItems(items);
-      }
-
-      console.log('selected items: ' + properties.items);
-      let start = new Date(properties.start);
-      let end = new Date(properties.end);
-      let delta = end - start;
-      if (delta < times.day) {
-        console.log("hours");
-      } else if (delta < times.week && delta > times.day) {
-        console.log("day");
-      } else if (delta < times.month && delta > times.week) {
-        console.log("week");
-      } else if (delta < times.year && delta > times.month) {
-        setKeys("month");
-        console.log("month");
-      } else if (delta < times.decade && delta > times.year) {
-        console.log("year");
-      }
-
-
-    });
-    timeline.on('select', (properties) => {
-
-    });
-  }
-
   render() {
     let postIndex = this.props.postIndex;
     let threadPosts = this.props.threadPosts;
-
-
 
     if (!threadPosts[postIndex]) { this.props.updateIndex(0); };
 
@@ -332,9 +223,9 @@ export class PostSelectors extends React.Component {
       let ext = threadPosts[postIndex].posts[0].ext;
 
       let preloadTim1 = threadPosts[postIndex === 0 ? threadPosts.length - 1 : postIndex].posts[0].tim;
-      let preloadExt1 = threadPosts[postIndex === 0 ? threadPosts.length - 1 : postIndex].posts[0].tim;
+      let preloadExt1 = threadPosts[postIndex === 0 ? threadPosts.length - 1 : postIndex].posts[0].ext;
       let preloadTim2 = threadPosts[postIndex === threadPosts.length - 1 ? 0 : postIndex].posts[0].tim;
-      let preloadExt2 = threadPosts[postIndex === threadPosts.length - 1 ? 0 : postIndex].posts[0].tim;
+      let preloadExt2 = threadPosts[postIndex === threadPosts.length - 1 ? 0 : postIndex].posts[0].ext;
 
       let hours = Math.abs(new Date(this.props.threadKey) - new Date(tim)) / 36e5;
       hours = hours.toFixed(1);
@@ -346,9 +237,11 @@ export class PostSelectors extends React.Component {
           {progressPercent()}
           <h1>Thread #{postIndex + 1} | Replies: {postCount}</h1>
           <h2>{`${title || ''} ${rating}`}</h2>
+
+          <p className="post-text" dangerouslySetInnerHTML={{ __html: description }}></p>
+          
           <p className="post-image-link"><a href={`https://images.cryptostar.ga/file/lon1-static/images/${preloadTim1}${preloadExt1}`}></a></p>
           <p className="post-image-link"><a href={`https://images.cryptostar.ga/file/lon1-static/images/${preloadTim2}${preloadExt2}`}></a></p>
-          <p className="post-text" dangerouslySetInnerHTML={{ __html: description }}></p>
           {quicklink()}
         </div>
       );
@@ -365,7 +258,7 @@ export class PostSelectors extends React.Component {
     return (
       <div className="biz-card">
         <div id="0" className="Preamble">
-        
+
           <Timeline {...this.props}
           />
 

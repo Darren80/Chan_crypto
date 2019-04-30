@@ -1,0 +1,5 @@
+mongo --host mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/ --eval "db.fsyncLock();"
+
+--resizefs LVMVolGroup/test
+
+mount -o discard,defaults,noatime /dev/vg1/mongoDB /mnt/mongoDB-database

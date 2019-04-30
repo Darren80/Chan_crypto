@@ -1,10 +1,3 @@
-sudo certbot --server https://acme-v02.api.letsencrypt.org/directory \
--d *.cryptostar.ga -d cryptostar.ga \
---preferred-challenges dns-01 --rsa-key-size 4096 certonly \
---dns-cloudflare \
---dns-cloudflare-credentials $HOME/.secrets/cloudflare.ini \
---dns-cloudflare-propagation-seconds 6
-
 sudo certbot --nginx --server https://acme-v02.api.letsencrypt.org/directory \
 -d *.cryptostar.ga -d cryptostar.ga \
 --preferred-challenges dns-01 --rsa-key-size 4096 \
@@ -14,9 +7,13 @@ sudo certbot --nginx --server https://acme-v02.api.letsencrypt.org/directory \
 
 sudo service nginx reload
 
+fstab template command:
+echo '/dev/DISK /mnt/FOLDER ext4 defaults,nofail,discard 0 0' | sudo tee -a /etc/fstab
+
 ssh -L 19999:127.0.0.1:19999 `
 -L 8088:127.0.0.1:8088 `
 -L 7000:127.0.0.1:7000 `
+-L 7010:127.0.0.1:7010 `
 root@ssh.cryptostar.ga
 
 

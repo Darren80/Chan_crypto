@@ -180,7 +180,6 @@ export class Timeline extends React.Component {
                 if (response.ok) {
                     let responseJson = await response.json();
                     this.props.handleData('posts', responseJson.threads, properties.items[0]);
-                    window.scroll(0,0);
                 }
             } catch (e) {
                 console.log(e);

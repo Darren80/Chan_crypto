@@ -5,10 +5,8 @@ const path = require('path');
 const mime = require('mime-types');
 const bodyParser = require("body-parser");
 
-const imagemin = require('imagemin');
-const imageminOptipng = require('imagemin-optipng');
-const imageminJpegtran = require('imagemin-jpegtran');
-const imageminGifsicle = require('imagemin-gifsicle');
+const compress = require('./express_compress');
+
 
 require('jpegtran-bin');
 const globby = require('globby');
@@ -31,7 +29,7 @@ let cryptoDB;
     useNewUrlParser: true
   });
   cryptoDB = connectedClient.db('crypto');
-}) ();
+})();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
@@ -53,22 +51,15 @@ app.use(bodyParser.json());
 
 app.post('/compress', async (req, res, next) => {
 
-  imagemin([`${os.homedir()}/tmp-images/${req.body.filename}`], `${os.homedir()}/images/`, {
-    plugins: [imageminJpegtran({
-      progressive: true
-    }),
-    imageminOptipng({
-      optimizationLevel: 2
-    }),
-    imageminGifsicle({
-      interlaced: true
-    })]
-  }).then((files) => {
+  try {
+    await compress.imageminLossless(req.body.filename);
     res.send('Image optimised.');
-  }).catch(err => {
+  } catch (e) {
+    console.log(e);
     res.sendStatus(404);
-    console.log(err);
-  });
+  }
+  
+
 });
 
 app.use('/i', express.static(path.join(os.homedir(), 'images'), {
@@ -139,18 +130,16 @@ app.get('/api/timeline', async (req, res) => {
   past7days.setDate(past7days.getDate() - 7);
   past14days.setDate(past14days.getDate() - 14);
 
-  let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() }}).project({ date: 1 }).limit(10000);
+  let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() } }).project({ date: 1 }).limit(10000);
 
   let acrhivalDates = [];
   await computedCursor.forEach(date => {
     acrhivalDates.push(new Date(date.date));
   })
 
-  // res.set({
-  //   'Cache-Control': 'public, max-age=60, immutable'
-  // });
-
-  console.log(acrhivalDates);
+  res.set({
+    'Cache-Control': 'public, max-age=60, immutable'
+  });
 
   res.json(acrhivalDates);
 
@@ -165,9 +154,12 @@ app.post('/api/timeline', async (req, res) => {
   if (await computedCursor.count() === 0) {
     res.status(404).json('That item does not exist.');
   } else {
-    res.json(await computedCursor.forEach(foundDoc => {
+    await computedCursor.forEach(foundDoc => {
+      res.set({
+        'Cache-Control': 'public, max-age=60, immutable'
+      });
       res.json(foundDoc);
-    }));
+    });
   }
 })
 
