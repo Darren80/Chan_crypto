@@ -23,7 +23,8 @@ ssh root@192.168.0.25mv -f /root/cryptostar.ga /mnt/backup
 
 sysbench --test=cpu --cpu-max-prime=20000 run
 
-journalctl -fue gitwatch
+journalctl -feu gitwatch
+journalctl -f -e -u githubhook
 
 #Update partition table without rebooting
 partprobe /dev/sdX
