@@ -1,7 +1,7 @@
 
 const board = 'biz';
 const corsProxy = 'https://cors-proxy-0.herokuapp.com/';
-
+const os = require('os')
 
 let config = {
     catalogUrls: ["https://a.4cdn.org/" + board + "/catalog.json", corsProxy + "https://a.4cdn.org/" + board + "/catalog.json"],
@@ -13,4 +13,11 @@ let config = {
     imageOptimserEntryScript: '$HOME/startImgOpti.sh'
 }
 
-module.exports = config;
+let paths = {
+    images_ls: `${os.homedir()}/images/images-list.txt`
+}
+
+module.exports = {
+    config,
+    paths
+};

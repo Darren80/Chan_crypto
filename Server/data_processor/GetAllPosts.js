@@ -5,7 +5,7 @@ const fetch = require('node-fetch'),
   shell = require('shelljs');
 
 const analyser = require('./dataAnalyser'),
-      config = require('./config');
+      cPaths = require('./config').paths; //config paths
 
 
 let connectedClient;
@@ -36,14 +36,14 @@ async function getAllPosts(partialThreads) {
   //   return;
   // }
 
-  if (shell.exec('rclone ls lon1:lon1-static/images | tee $HOME/images-list.txt').code !== 0) {
+  if (shell.exec(`rclone ls lon1:lon1-static/images | tee ${cPaths.image_ls}`).code !== 0) {
 
     console.log('Image-list update failed on: ', shell.exec('date'));
     shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images-list-status.txt');
-
+    
   }
 
-  data = fs.readFileSync(`${os.homedir()}/images-list.txt`);
+  data = fs.readFileSync(`${cPaths.image_ls}`);
 
   let itemsProcessed = 0;
   let fullThreads = [];
