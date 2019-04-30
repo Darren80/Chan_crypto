@@ -52,7 +52,7 @@ let compress = {
     let fileName = path.parse(file).name;
 
     if (['.png', '.jpeg', '.jpg'].includes(fileExtension)) {
-      shell.exec(`cwebp -q 80 ${file} -o $HOME/images/images_compressed_webp/${fileName}.webp ::: $HOME/images/tmp-images/*.{jpg,png,gif}`);
+      shell.exec(`cwebp -q 80 ${file} -o $HOME/images/images_compressed_webp/${fileName}.webp`);
     }
     
   }
