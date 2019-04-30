@@ -5,16 +5,14 @@ const path = require('path');
 const mime = require('mime-types');
 const bodyParser = require("body-parser");
 
-const compress = require('./express_compress');
+const compress = require('./utils/compress');
 
 
 require('jpegtran-bin');
 const globby = require('globby');
 
 const os = require('os');
-const ms = require('ms');
 // const fetch = require('node-fetch');
-var cors = require('cors');
 const _ = require("underscore");
 
 const app = express();
@@ -62,12 +60,6 @@ app.post('/compress', async (req, res, next) => {
   
 });
 
-app.use('/i', express.static(path.join(os.homedir(), 'images'), {
-  setHeaders: (res, path) => {
-    res.setHeader('Cache-Control', `public, max-age=${31536000}, immutable`);
-  }
-}));
-
 app.use('/', express.static(path.join(__dirname, 'build'),
   {
     setHeaders: (res, path) => {
@@ -99,6 +91,19 @@ app.get('/loaderio', function (req, res) {
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
+app.all('/api/threads', async (req, res, next) => {
+  res.set({
+    'Cache-Control': 'public, max-age=30, immutable'
+  });
+  next();
+})
+app.all('/api/timeline', async (req, res, next) => {
+  res.set({
+    'Cache-Control': 'public, max-age=30, immutable'
+  });
+  next();
+})
+
 app.get('/api/threads', async (req, res) => {
 
   if (!connectedClient) {
@@ -114,10 +119,6 @@ app.get('/api/threads', async (req, res) => {
   });
   //Assuming threads is an array
   // document.threads = document.threads.slice(0, 45);
-
-  res.set({
-    'Cache-Control': 'public, max-age=60, immutable'
-  });
 
   res.json(document);
 });
@@ -137,10 +138,6 @@ app.get('/api/timeline', async (req, res) => {
     acrhivalDates.push(new Date(date.date));
   })
 
-  res.set({
-    'Cache-Control': 'public, max-age=60, immutable'
-  });
-
   res.json(acrhivalDates);
 
 });
@@ -155,9 +152,6 @@ app.post('/api/timeline', async (req, res) => {
     res.status(404).json('That item does not exist.');
   } else {
     await computedCursor.forEach(foundDoc => {
-      res.set({
-        'Cache-Control': 'public, max-age=60, immutable'
-      });
       res.json(foundDoc);
     });
   }
@@ -167,7 +161,6 @@ const mainApp = express();
 
 mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
 mainApp.use(vhost('cryptostar.ga', app));
-// mainApp.use(vhost('cryptostar.ga', app));
 
 const server = mainApp.listen(3000, () => console.log("Server started."));
 
