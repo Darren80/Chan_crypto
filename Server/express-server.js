@@ -53,13 +53,13 @@ app.post('/compress', async (req, res, next) => {
 
   try {
     await compress.imageminLossless(req.body.filename);
+    await compress.imageminLossy(req.body.filename);
     res.send('Image optimised.');
   } catch (e) {
     console.log(e);
-    res.sendStatus(404);
+    res.sendStatus(500);
   }
   
-
 });
 
 app.use('/i', express.static(path.join(os.homedir(), 'images'), {

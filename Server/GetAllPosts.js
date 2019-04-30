@@ -68,7 +68,7 @@ async function getAllPosts(partialThreads) {
 
         //Optimise all images via lossless compression
         console.log('Executing script.');
-        shell.exec('bash $HOME/startImgOpti.sh', (code, output, stderr) => {
+        shell.exec(`bash ${config.imageOptimserEntryScript}`, (code, output, stderr) => {
           shell.echo(`exit code: ${code}`);
         });
 
