@@ -39,7 +39,7 @@ cwebp -q 50 -mt -lossless 1554623831585.png -o picture_lossless.webp
 
 parallel -eta sh handleNewImages.sh {} ::: $HOME/tmp-images/*.{jpg,png,gif,webm}
 
-parallel -eta cwebp -q 99 {} -o {.}.webp ::: $HOME/images/*.{jpg,png}
+parallel -eta cwebp -q 80 {} -o {.}.webp ::: $HOME/images/*.{jpg,png,gif}
 parallel -eta sh imgCompare.sh {} {.}.webp ::: $HOME/images/*.{jpg,png}
 
 

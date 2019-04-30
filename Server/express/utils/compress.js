@@ -12,11 +12,12 @@ const imageminGiflossy = require('imagemin-giflossy');
 
 const path = require('path');
 const os = require('os');
+const shell = require('shelljs');
 
 let compress = {
 
   imageminLossless(filename) {
-    return imagemin([`${os.homedir()}/tmp-images/${filename}`], `${os.homedir()}/images/`, {
+    return imagemin([`${os.homedir()}/images/tmp-images/${filename}`], `${os.homedir()}/images/images_lossless/`, {
       plugins: [imageminJpegtran({
         progressive: true
       }),
@@ -30,7 +31,7 @@ let compress = {
   },
 
   imageminLossy(filename) {
-    return imagemin([`${os.homedir()}/tmp-images/${filename}`], `${os.homedir()}/images_c/`, {
+    return imagemin([`${os.homedir()}/images/tmp-images/${filename}`], `${os.homedir()}/images/images_compressed/`, {
       plugins: [imageminMozjpeg({
         quality: 80,
         progressive: true
@@ -44,6 +45,16 @@ let compress = {
         lossy: 30
       })]
     });
+  },
+
+  convertToWebP(file) {
+    let fileExtension = path.parse(file).ext;
+    let fileName = path.parse(file).name;
+
+    if (['.png', '.jpeg', '.jpg'].includes(fileExtension)) {
+      shell.exec(`cwebp -q 80 ${file} -o $HOME/images/images_compressed_webp/${fileName}.webp ::: $HOME/images/tmp-images/*.{jpg,png,gif}`);
+    }
+    
   }
 
 };

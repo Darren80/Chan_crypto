@@ -2,7 +2,7 @@ const shell = require('shelljs');
 const process = require('process');
 
 const Posts = require('./GetAllPosts');
-const config = require('./config');
+const cUrls = require('./../config').urls;
 
 
 const fetch = require('node-fetch');
@@ -103,7 +103,7 @@ async function fetchBoardCatalog(i = 0) {
 
 
     try {
-        const response = await fetch(config.catalogUrls[i]);
+        const response = await fetch(cUrls.catalogUrls[i]);
 
         if (response.ok) {
             const jsonResponse = await response.json();
@@ -116,7 +116,7 @@ async function fetchBoardCatalog(i = 0) {
     } catch (e) {
         console.log(e);
 
-        if (i === config.catalogUrls.length - 1) { 
+        if (i === cUrls.catalogUrls.length - 1) { 
             return `All the url's tried failed, no more fallback url's avaliable: ${e}`;
         } else {
             fetchBoardCatalog(i + 1);

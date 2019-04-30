@@ -5,7 +5,8 @@ const fetch = require('node-fetch'),
   shell = require('shelljs');
 
 const analyser = require('./dataAnalyser'),
-      cPaths = require('./config').paths; //config paths
+      cPaths = require('./../config.js').paths, //config paths
+      cUrls = require('./../config.js').urls;
 
 
 let connectedClient;
@@ -68,7 +69,7 @@ async function getAllPosts(partialThreads) {
 
         //Optimise all images via lossless compression
         console.log('Executing script.');
-        shell.exec(`bash ${config.imageOptimserEntryScript}`, (code, output, stderr) => {
+        shell.exec(`bash ${cPaths.imageOptimserEntryScript}`, (code, output, stderr) => {
           shell.echo(`exit code: ${code}`);
         });
 
@@ -94,7 +95,7 @@ function saveThreadToDB(dateOfSnapshot, fullThreads) {
 async function getThreadPosts(threadNo, i = 0) {
 
   try {
-    const response = await fetch(config.postUrls[i] + threadNo + ".json");
+    const response = await fetch(cUrls.postUrls[i] + threadNo + ".json");
 
     if (response.ok) {
       const jsonResponse = await response.json();
@@ -105,7 +106,7 @@ async function getThreadPosts(threadNo, i = 0) {
   } catch (e) {
     console.log(e);
 
-    if (i === config.postUrls.length - 1) {
+    if (i === cUrls.postUrls.length - 1) {
       return `All the url's tried failed, no more fallback url's avaliable: ${e}`;
     } else {
       return await getThreadPosts(i + 1);
@@ -125,7 +126,7 @@ async function getThreadImage(tim, ext) {
       console.log('content-type:', res.headers['content-type']);
       console.log('content-length:', res.headers['content-length']);
 
-      request(uri).pipe(fs.createWriteStream(`${os.homedir()}/tmp-images/${filename}`)).on('close', callback);
+      request(uri).pipe(fs.createWriteStream(`${os.homedir()}/images/tmp-images/${filename}`)).on('close', callback);
     });
   };
 
