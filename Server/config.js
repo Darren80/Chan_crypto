@@ -1,7 +1,7 @@
 
 const board = 'biz';
 const corsProxy = 'https://cors-proxy-0.herokuapp.com/';
-const os = require('os')
+const os = require('os');
 
 let urls = {
     catalogUrls: ["https://a.4cdn.org/" + board + "/catalog.json", corsProxy + "https://a.4cdn.org/" + board + "/catalog.json"],
