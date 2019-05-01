@@ -38,7 +38,7 @@ async function getAllPosts(partialThreads) {
   // }
 
   console.log(`rclone ls lon1:lon1-static/images | tee ${cPaths.images_ls}`);
-  if (shell.exec(`rclone ls lon1:lon1-static/images | tee ${cPaths.image_ls}`).code !== 0) {
+  if (shell.exec(`rclone ls lon1:lon1-static/images | tee $HOME/images/images_list.txt`).code !== 0) {
 
     console.log('Image-list update failed on: ', shell.exec('date'));
     shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images-list-status.txt');
