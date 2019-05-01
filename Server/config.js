@@ -12,7 +12,7 @@ let urls = {
 }
 
 let paths = {
-    images_ls: `/root/${os.homedir()}WorkPls.txt`,//`${os.homedir()}/images/images-list.txt`,
+    images_ls: `${os.homedir()}/WorkPls.txt`,//`${os.homedir()}/images/images-list.txt`,
     imageOptimserEntryScript: '$HOME/startImgOpti.sh'
 }
 
