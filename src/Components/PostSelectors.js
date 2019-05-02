@@ -93,7 +93,7 @@ export class PostSelectors extends React.Component {
     if (!this.processing) {
       this.processing = true;
 
-      fetch(`https://images.cryptostar.ga/file/lon1-static/images/${tim}${ext}`).then(response => {
+      fetch(`https://images.cryptostar.ga/file/lon1-static/images_lossless/${tim}${ext}`).then(response => {
 
         if (response.status === 404) {
           throw new Error("404");

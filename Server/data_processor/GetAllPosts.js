@@ -37,16 +37,16 @@ async function getAllPosts(partialThreads) {
   //   return;
   // }
 
-  let images_ls = cPaths.images_ls;
-  console.log(`rclone ls lon1:lon1-static/images | tee $HOME/images/images_list.txt`);
-  if (shell.exec(`rclone ls lon1:lon1-static/images | tee ` + images_ls).code !== 0) {
+  let images_ls_path = cPaths.images_ls;
+
+  if (shell.exec(`rclone ls lon1:lon1-static/images_lossless | tee ` + images_ls_path).code !== 0) {
 
     console.log('Image-list update failed on: ', shell.exec('date'));
-    shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images-list-status.txt');
+    shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images/images-list-status.txt');
     
   }
 
-  data = fs.readFileSync(images_ls);
+  data = fs.readFileSync(images_ls_path);
 
   let itemsProcessed = 0;
   let fullThreads = [];
