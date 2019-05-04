@@ -16,6 +16,11 @@ ssh -L 19999:127.0.0.1:19999 `
 -L 7010:127.0.0.1:7010 `
 root@ssh.cryptostar.ga
 
+bash ~/rclone-sync.sh --output=/root/backup/cryptostar.ga --exclude=mongodb_backup/**
+
+sh run_as_cron.sh $HOME/cron-env nice -n 15 flock -n /tmp/backup_mongodb.lockfile sh $HOME/backup_mongodb.sh
+
+sh run_as_cron.sh $HOME/cron-env 'echo $PATH'
 
 https://cors-proxy-0.herokuapp.com/https://a.4cdn.org/
 

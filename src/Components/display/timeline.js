@@ -12,7 +12,11 @@ export class Timeline extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(() => this.createVisualisation());
+        this.createVisualisation();
+
+        setInterval(() => {
+            this.createVisualisation();
+        }, 60 * 1000);
     }
 
     async createVisualisation() {
