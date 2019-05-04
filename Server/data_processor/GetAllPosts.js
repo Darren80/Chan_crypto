@@ -47,7 +47,7 @@ async function getAllPosts(partialThreads) {
       data = B2FileList;
     })
   } catch (e) {
-    console.log('Image-list update failed on: ', shell.exec('date'));
+    console.log(2);
     shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images/images-list-status.txt');
   }
   console.log(data);
