@@ -41,7 +41,6 @@ async function getAllPosts(partialThreads) {
 
   try {
     let child = await shell.exec(`rclone ls lon1:lon1-static/images_lossless`, {
-      silent: true,
       async: true
     })
     child.stdout.on('data', B2FileList => {
