@@ -40,12 +40,9 @@ async function getAllPosts(partialThreads) {
   let images_ls_path = cPaths.images_ls;
 
   try {
-    let child = shell.exec(`rclone ls lon1:lon1-static/images_lossless`, {
-      
-    })
-    child.stdout.on('data', B2FileList => {
-      data = B2FileList;
-    })
+    let child = shell.exec(`rclone ls lon1:lon1-static/images_lossless`).stdout;
+
+    data = child;
   } catch (e) {
     console.log(e);
     shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images/images-list-status.txt');
