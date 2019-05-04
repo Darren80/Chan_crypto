@@ -53,8 +53,6 @@ async function getAllPosts(partialThreads) {
   }
   console.log(data);
 
-  data = fs.readFileSync(images_ls_path);
-
   let itemsProcessed = 0;
   let fullThreads = [];
 
