@@ -53,6 +53,8 @@ let compress = {
 
     if (['.png', '.jpeg', '.jpg'].includes(fileExtension)) {
       shell.exec(`cwebp -q 80 ${os.homedir()}/images/tmp-images/${file} -o $HOME/images/images_compressed_webp/${fileName}.webp`);
+    } else {
+      console.log(`File ${file} was not processed.`);
     }
     
   }

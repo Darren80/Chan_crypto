@@ -40,12 +40,13 @@ async function getAllPosts(partialThreads) {
   let images_ls_path = cPaths.images_ls;
 
   try {
-    data = shell.exec(`rclone ls lon1:lon1-static/images_lossless`).stdout;
+    data = shell.exec(`nice rclone ls lon1:lon1-static/images_lossless`).stdout;
   } catch (e) {
     console.log(e);
     shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images/images-list-status.txt');
+
+    process.exit(2);
   }
-  console.log(data);
 
   let itemsProcessed = 0;
   let fullThreads = [];
@@ -70,7 +71,7 @@ async function getAllPosts(partialThreads) {
 
         //Optimise all images via lossless compression
         console.log('Executing script.');
-        shell.exec(`bash ${cPaths.imageOptimserEntryScript}`, (code, output, stderr) => {
+        shell.exec(`nice bash ${cPaths.imageOptimserEntryScript}`, (code, output, stderr) => {
           shell.echo(`exit code: ${code}`);
         });
 
