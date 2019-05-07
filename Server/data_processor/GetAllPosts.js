@@ -37,14 +37,12 @@ async function getAllPosts(partialThreads) {
   //   return;
   // }
 
-  let images_ls_path = cPaths.images_ls;
 
   try {
     data = shell.exec(`nice rclone ls lon1:lon1-static/images_lossless`).stdout;
   } catch (e) {
     console.log(e);
     shell.exec('(echo Image-list update failed.; date) | tee -a $HOME/images/images-list-status.txt');
-
     process.exit(2);
   }
 
