@@ -19,7 +19,8 @@ class App extends Component {
       threadImage: '',
       imgDownloadPercent: 0,
       deepaiApiKey: '',
-      revealNsfw: false
+      revealNsfw: false,
+      connectionSpeed: 999
     };
     this.fetchBoardCatalog = this.fetchBoardCatalog.bind(this);
     this.prepareData = this.prepareData.bind(this);
@@ -31,8 +32,8 @@ class App extends Component {
     this.updateImgDownloadPercent = this.updateImgDownloadPercent.bind(this);
     this.updateNsfw = this.updateNsfw.bind(this);
     this.updateTimelineZoomLevel = this.updateTimelineZoomLevel.bind(this);
-
-
+    this._showOfflineMessage = this._showOfflineMessage.bind(this);
+    this._hideOfflineMessage = this._hideOfflineMessage.bind(this);
   }
 
   componentDidMount() {
@@ -43,11 +44,15 @@ class App extends Component {
     if ("connection" in navigator) {
       setInterval(() => {
         this.setState({
-          connectionSpeed: navigator.connection.downlink
+          connectionSpeed: navigator.connection.downlink || 0
         });
       }, 1000);
     }
-    
+  }
+
+  componentDidUpdate() {
+    let connectionMessage = document.getElementsByClassName("connectionMessage");
+    connectionMessage[0].style.height = `${document.body.scrollHeight}px`;
   }
 
   async fetchBoardCatalog() {
@@ -109,6 +114,44 @@ class App extends Component {
 
   async refreshCatalog() {
     await this.fetchBoardCatalog();
+  }
+
+
+
+  _showOfflineMessage() {
+    let offlineMsg = document.getElementById("offline-message");
+
+    document.getElementsByTagName("html")[0].setAttribute("line-status", 'online');
+
+    offlineMsg.setAttribute("aria-hidden", "false");
+
+    offlineMsg.textContent = 'You are offline';
+    offlineMsg.classList.add('offline'); offlineMsg.classList.remove('online');
+
+    let connectionMessage = document.getElementsByClassName("connectionMessage");
+
+    connectionMessage[0].style.height = `${document.body.scrollHeight}px`;
+    console.log(`${document.body.scrollHeight}px`);
+
+    setTimeout(function () {
+      offlineMsg.focus();
+    }, 400);
+  }
+
+  _hideOfflineMessage() {
+    let offlineMsg = document.getElementById("offline-message");
+
+
+    document.getElementsByTagName("html")[0].setAttribute("offline", 'offline');
+
+    offlineMsg.textContent = 'You are online';
+
+    offlineMsg.classList.add('online'); offlineMsg.classList.remove('offline');
+    offlineMsg.setAttribute("aria-hidden", "true");
+
+    setTimeout(function () {
+      offlineMsg.classList.remove('online');
+    }, 2000);
   }
 
   handleData(type, data, key) {
@@ -174,9 +217,15 @@ class App extends Component {
   }
 
   render() {
+    window.addEventListener("offline", this._showOfflineMessage, false);
+    window.addEventListener("online", this._hideOfflineMessage, false);
+
     return (
       <div className="App">
         <header className="App-header">
+          <div className="connectionMessage">
+            <div aria-hidden="true" tabindex="-1" id="offline-message">You are XXXXXXX</div>
+          </div>
           {/* <GetAllPosts
             threads={this.state.threads}
             handleData={this.handleData}
