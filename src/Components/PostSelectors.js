@@ -115,6 +115,7 @@ export class PostSelectors extends React.Component {
       // eslint-disable-next-line no-undef
       console.log("saveData: ", saveData, "Webp Support: ", Modernizr.webp)
       if (saveData) {
+        alert("Save data");
         // eslint-disable-next-line no-undef
         if (Modernizr.webp) {
           imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed_webp/${tim}.webp`;
