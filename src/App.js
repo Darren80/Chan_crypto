@@ -31,7 +31,7 @@ class App extends Component {
     this.updateImgDownloadPercent = this.updateImgDownloadPercent.bind(this);
     this.updateNsfw = this.updateNsfw.bind(this);
     this.updateTimelineZoomLevel = this.updateTimelineZoomLevel.bind(this);
-    
+
 
   }
 
@@ -39,6 +39,15 @@ class App extends Component {
     // let timer1 = setInterval(this.fetchBoardCatalog, 30000);
     // this.setState({timer1: timer1});
     this.fetchBoardCatalog();
+
+    if ("connection" in navigator) {
+      setInterval(() => {
+        this.setState({
+          connectionSpeed: navigator.connection.downlink
+        });
+      }, 1000);
+    }
+    
   }
 
   async fetchBoardCatalog() {
@@ -54,7 +63,7 @@ class App extends Component {
         this.setState({
           catalog: jsonResponse
         });
-        
+
       }
     } catch (e) {
       console.log(e);
@@ -79,7 +88,7 @@ class App extends Component {
 
     }
 
-    let crypto = () => { 
+    let crypto = () => {
       //Generate two cryptographically random, unsigned 32-bit integers
       let array = new Uint32Array(2);
       window.crypto.getRandomValues(array);
@@ -186,9 +195,11 @@ class App extends Component {
 
           {this.state.loaded && (<PostSelectors
 
+            connectionSpeed={this.state.connectionSpeed}
+
             threadPosts={this.state.threadPosts}
             threadKey={this.state.threadKey}
-            
+
             updateImgPercent={this.updateImgDownloadPercent}
             imgPercent={this.state.imgDownloadPercent}
 
@@ -197,13 +208,13 @@ class App extends Component {
 
             updateIndex={this.updateIndex}
             postIndex={this.state.postIndex}
-            
+
             updateNsfw={this.updateNsfw}
             revealNsfw={this.state.revealNsfw}
 
             updateTimelineZoomLevel={this.updateTimelineZoomLevel}
             timelineZoomLevel={this.state.timelineZoomLevel}
-      
+
             handleData={this.handleData}
           />
           )}

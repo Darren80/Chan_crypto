@@ -115,7 +115,6 @@ export class PostSelectors extends React.Component {
       // eslint-disable-next-line no-undef
       console.log("saveData: ", saveData, "Webp Support: ", Modernizr.webp)
       if (saveData) {
-        alert("Save data");
         // eslint-disable-next-line no-undef
         if (Modernizr.webp) {
           imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed_webp/${tim}.webp`;
@@ -268,13 +267,13 @@ export class PostSelectors extends React.Component {
         <div className="post" key={postIndex}>
           {backgroundImageStyles()}
           {progressPercent()}
+          <p className="post-image-link">{this.props.connectionSpeed}</p>
           <h1>Thread #{postIndex + 1} | Replies: {postCount}</h1>
           <h2>{`${title || ''} ${rating}`}</h2>
 
           <p className="post-text" dangerouslySetInnerHTML={{ __html: description }}></p>
 
           <p className="post-image-link"><a href={`https://images.cryptostar.ga/file/lon1-static/images/${preloadTim1}${preloadExt1}`}></a></p>
-          <p className="post-image-link"><a href={`https://images.cryptostar.ga/file/lon1-static/images/${preloadTim2}${preloadExt2}`}></a></p>
           {quicklink()}
         </div>
       );
