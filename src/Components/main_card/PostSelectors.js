@@ -104,7 +104,7 @@ export class PostSelectors extends React.Component {
     // window.modernizr.on('webp', function (result) {
     //   console.log(result);
     // });
-
+    
     let imageStr;
     let imageUrl;
     let that = this;
@@ -118,7 +118,7 @@ export class PostSelectors extends React.Component {
     // eslint-disable-next-line no-undef
     if (saveData || this.props.connectionSpeed < 3) {
       // eslint-disable-next-line no-undef
-      if (Modernizr.webp && ['.jpg', '.jpeg', '.png'].includes(ext)) {
+      if (Modernizr.webp && ['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
         imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed_webp/${tim}.webp`;
         imageUrls.type = 'compressed_webp'
       } else {
@@ -133,6 +133,10 @@ export class PostSelectors extends React.Component {
     this.props.updateImageUrls(imageUrls);
 
     try {
+
+      setTimeout(() => {
+        this.props.showProgressBar(true);
+      }, 750);  
 
       processing++;
       controller = new AbortController();
@@ -198,6 +202,8 @@ export class PostSelectors extends React.Component {
 
       this.props.updateImage(URL.createObjectURL(blob));
 
+      this.props.showProgressBar(false);
+
     } catch (error) {
 
       console.log(error.message);
@@ -255,11 +261,13 @@ export class PostSelectors extends React.Component {
           <CardDetails
             threadPosts={this.props.threadPosts}
             postIndex={this.props.postIndex}
-            
+
             threadImage={this.props.threadImage}
             imgPercent={this.props.imgPercent}
 
             connectionSpeed={this.props.connectionSpeed}
+
+            isShowProgressBar={this.props.isShowProgressBar}
 
             updateImageUrls={this.props.updateImageUrls}
             imageUrls={this.props.imageUrls} />

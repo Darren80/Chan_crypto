@@ -32,8 +32,8 @@ export class Preload extends Component {
                 return `https://images.cryptostar.ga/file/lon1-static/images_lossless/${filename}`;
             }
             return ''; //`https://images.cryptostar.ga/file/lon1-static/images_lossless/${filename}`;
-        })
-        console.log(images);
+        });
+        
         quicklink({
             urls: [...images],
             priority: true,

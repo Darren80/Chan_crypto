@@ -17,7 +17,7 @@ class App extends Component {
       postIndex: 0,
       threadImage: '',
       imgDownloadPercent: 0,
-      deepaiApiKey: '',
+      showProgressBar: false,
       revealNsfw: false,
       connectionSpeed: 999,
       imageUrls: {
@@ -38,7 +38,9 @@ class App extends Component {
     this._showOfflineMessage = this._showOfflineMessage.bind(this);
     this._hideOfflineMessage = this._hideOfflineMessage.bind(this);
     this.updateImageUrls = this.updateImageUrls.bind(this);
+    this.showProgressBar = this.showProgressBar.bind(this);
     
+
   }
 
   componentDidMount() {
@@ -48,6 +50,9 @@ class App extends Component {
 
     if ("connection" in navigator) {
       setInterval(() => {
+        if (this.state.connectionSpeed === navigator.connection.downlink) {
+          return;
+        }
         this.setState({
           connectionSpeed: navigator.connection.downlink || 0
         });
@@ -63,21 +68,6 @@ class App extends Component {
   async fetchBoardCatalog() {
     //Retrive the latest /biz/ catalog
     this.prepareData();
-    return;
-    let url = corsProxy + "https://a.4cdn.org/" + board + "/catalog.json";
-
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        const jsonResponse = await response.json();
-        this.setState({
-          catalog: jsonResponse
-        });
-
-      }
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   async prepareData() {
@@ -207,14 +197,22 @@ class App extends Component {
     });
   }
 
+  showProgressBar(boolean) {
+
+    setTimeout(() => {
+      this.setState({
+        showProgressBar: boolean
+      });
+    }, 500)
+  }
+
   updateNsfw() {
     this.setState({
       revealNsfw: true
-    })
+    });
   }
 
   updateImageUrls(imageUrls) {
-    console.log(imageUrls);
     this.setState({
       imageUrls: imageUrls
     });
@@ -277,11 +275,14 @@ class App extends Component {
             updateTimelineZoomLevel={this.updateTimelineZoomLevel}
             timelineZoomLevel={this.state.timelineZoomLevel}
 
+            showProgressBar={this.showProgressBar}
+            isShowProgressBar={this.state.showProgressBar}
+
             handleData={this.handleData}
           />
           )}
-          
-          <Preload imagesObj={this.state.imageUrls}/>
+
+          <Preload imagesObj={this.state.imageUrls} />
 
 
 

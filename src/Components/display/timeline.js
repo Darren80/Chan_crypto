@@ -66,7 +66,6 @@ export class Timeline extends React.Component {
         });
 
         // Create a DataSet (allows two way data-binding)
-        console.log(data);
         let items = new vis.DataSet(data)
 
         // Configuration for the Timeline
@@ -103,7 +102,7 @@ export class Timeline extends React.Component {
             let delta = end - start;
             let itemsPerMonth = 1;
 
-            console.log(this.timescale(delta));
+            // console.log(this.timescale(delta));
 
             switch (this.timescale(delta)) {
                 case '1hour':

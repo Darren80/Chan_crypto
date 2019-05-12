@@ -29,11 +29,10 @@ export class CardDetails extends React.Component {
         }
     }
 
-    processing = false;
-    downloading = false;
-
     progressBar() {
-
+        if (!this.props.isShowProgressBar) {
+            return;
+        }
         if (!this.props.threadImage) {
             return <LinearProgress
                 className="linear-progress"
@@ -129,6 +128,7 @@ export class CardDetails extends React.Component {
                 preloadImages: [bwImage, fwImage, bwImage2, fwImage2]
             });
         }
+
 
         return (
             <div className="post" key={postIndex}>
