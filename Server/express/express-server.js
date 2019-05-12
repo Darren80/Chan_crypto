@@ -83,7 +83,7 @@ app.use('/', express.static(path.join('/root/chan_crypto', 'build'),
 //   next();
 // })
 
-owaspApp.use(express.static(path.join(os.homedir(), 'CheatSheetSeries-master/generated/site')));
+owaspApp.use(express.static(path.join(os.homedir(), 'owasp_site/site')));
 // owaspApp.get('/', async (req, res, next) => {
 //   res.sendFile(path.join(os.homedir(), 'CheatSheetSeries-master/generated/site/index.html'));
 // });

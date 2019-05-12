@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { localforageInit } from '../utils/initLocalforage';
 require('vis/dist/vis.css');
 const vis = require('vis');
 
@@ -190,7 +189,6 @@ export class Timeline extends React.Component {
             }
 
             let key = Number(properties.items[0]);
-            let allThreadPosts = await localforageInit.getItem(properties.items[0]);
             // 
         });
     }

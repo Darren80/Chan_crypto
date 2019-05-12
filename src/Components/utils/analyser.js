@@ -1,5 +1,3 @@
-import { localforageInit } from './initLocalforage';
-
 const linkify = require('linkifyjs');
 const cryptocurrencies = require('cryptocurrencies');
 const top400Tickers = ['BTC', 'XRP', 'ETH', 'LTC', 'EOS', 'BCH', 'USDT', 'TRX', 'XLM', 'BNB', 'BSV', 'ADA', 'XMR', 'IOTA', 'DASH', 'NEO', 'MKR', 'ETC', 'XEM', 'ZEC', 'USDC', 'WAVES', 'XTZ', 'DOGE', 'VET', 'TUSD', 'ONT', 'BTG', 'QTUM', 'LINK', 'OMG', 'DCR', 'HOT', 'REP', 'BAT', 'ZRX', 'ZIL', 'LSK', 'PAX', 'BCN', 'NANO', 'BCD', 'DGB', 'BTS', 'NPXS', 'ICX', 'AE', 'XVG', 'STEEM', 'SC', 'GUSD', 'STRAT', 'BTM', 'DAI', 'R', 'IOST', 'KMD', 'PPT', 'SNT', 'ETN', 'CNX', 'REPO', 'GNT', 'MAID', 'AOA', 'THETA', 'ARDR', 'FCT', 'HT', 'HC', 'ODE', 'INB', 'XIN', 'ARK', 'LRC', 'WTC', 'QNT', 'LKY', 'PIVX', 'VERI', 'CRO', 'MANA', 'RDD', 'EURS', 'GXC', 'PAI', 'MCO', 'AION', 'KCS', 'NEXO', 'ETP', 'DGD', 'XZC', 'ELA', 'RVN', 'POWR', 'BNT', 'WAX', 'DENT', 'MONA', 'WAN', 'ELF', 'MOAC', 'POLY', 'B2G', 'SAN', 'PAY', 'DGTX', 'LOOM', 'CENNZ', 'NULS', 'ZEN', 'NXT', 'QKC', 'NAS', 'TOMO', 'FUN', 'APL', 'WICC', 'SYS', 'AGI', 'BTCP', 'ENG', 'QASH', 'MGO', 'EDR', 'BCZERO', 'DCN', 'GBYTE', 'ENJ', 'GBC', 'GAS', 'RLC', 'OSA', 'EDO', 'RNT', 'KNC', 'PART', 'CMT', 'DRGN', 'STORJ', 'MITH', 'MFT', 'KIN', 'NXS', 'BRD', 'CHX', 'XPX', 'QBIT', 'IOTX', 'SALT', 'GVT', 'CVC', 'CND', 'XYO', 'EDG', 'SUB', 'CTXC', 'UNO', 'GRS', 'C20', 'BOS', 'AUTO', 'NEBL', 'INO', 'HYC', 'REQ', 'TCT', 'GTO', 'GETX', 'STORM', 'BIX', 'SRN', 'MDA', 'TRUE', 'PLC', 'SXDT', 'PPC', 'VTC', 'LOC', 'ETHOS', 'OCN', 'BFT', 'VEE', 'GNO', 'BZNT', 'WGR', 'PZM', 'SKY', 'EMC', 'DATA', 'CNUS', 'TKY', 'NSD', 'BLOCK', 'LML', 'TEL', 'POE', 'QRL', 'IGNIS', 'SMT', 'MAN', 'TPAY', 'DDD', 'PMA', 'RDN', 'MTL', 'ECOREAL', 'ANT', 'REN', 'CRPT', 'OST', 'STACS', 'NEC', 'RHOC', 'DMT', 'UTK', 'SLS', 'DEX', 'TEN', 'VITAE', 'HEDG', 'NCASH', 'MLN', 'CS', 'MEDX', 'BCO', 'NAV', 'RUFF', 'EVR', 'SLT', 'TKN', 'DLT', 'NMC', 'SMART', 'VIBE', 'LCC', 'DROP', 'SBD', 'FSN', 'INS', 'EMC2', 'QSP', 'GOT', 'PLR', 'HYN', 'NKN', 'APIS', 'EVN', 'SAFEX', 'PPP', 'FIII', 'EVN', 'LEND', 'SWM', 'GTC', 'BRZC', 'MOC', 'WINGS', 'BLZ', 'ADX', 'ECA', 'AMB', 'MXM', 'BURST', 'UBQ', 'CPT', 'NLG', 'CWV', 'LRN', 'NRG', 'AOG', 'XWC', 'MDS', 'SDA', 'BCV', 'TIOX', 'LEO', 'HPB', 'WABI', 'NIX', 'COSS', 'XDN', 'COSM', 'FLO', 'SPHTX', 'MWAT', 'BEAM', 'BAX', 'SNGLS', 'PHX', 'KEY', 'ITC', 'VIA', 'TNB', 'WPR', 'ABT', 'SNM', 'MXC', 'LA', 'ABT', 'NEU', 'BAY', 'DNT', 'MET', 'NOAH', 'LAMB', 'CSC', 'SCRL', 'IHT', 'META', 'FAIR', 'WCT', 'ZIP', 'HUM', 'MOD', 'BITCNY', 'EDR', 'CLOAK', 'RFR', 'PRO', 'TNT', 'VITE', 'PLY', 'POA', 'FOAM', 'BTO', 'HYDRO', 'WWB', 'AMO', 'KAT', 'XSN', 'BPT', 'QNTU', 'MED', 'RCN', 'ACT', 'QLC', 'JNT', 'CLAM', 'DTA', 'CPC', 'EVX', 'TRIO', 'SOC', 'XAS', 'GAME', 'CBC', 'ZCL', 'TMC', 'CVNT', 'CVT', 'DX', 'TRAC', 'ATCC', 'OIO', 'LBC', 'MOBI', 'MTH', 'QCH', 'LGO', 'PRG', 'CDT', 'ARN', 'POLIS', 'RBLX', 'ROX', 'TTC', '$PAC', 'PST', 'DBET', 'SSP', 'LOKI', 'NPX', 'FTM', 'INT', 'DEC', 'NMR', 'DGX', 'LYL', 'LYM', 'PAI', 'KAN', 'RTH', 'APPC', 'DERO', 'TIX', 'CRYP', 'BITUSD', 'CNN', 'LBA', 'MER', 'LINDA', 'XCP', 'VIB', 'YOYOW', 'NTY', 'POT']
@@ -229,14 +227,14 @@ export let helper = {
 
         let counter = 0;
         if (!allWords) {
-            let wordsStore = localforageInit.wordStore();
-            await wordsStore.getItem("allWords").then((words) => {
-                allWords = words.map(word => word.toLowerCase().trim());
-            }).catch(function (err) {
-                // This code runs if there were any errors
-                console.log(err);
-                return err;
-            });
+            // let wordsStore = localforageInit.wordStore();
+            // await wordsStore.getItem("allWords").then((words) => {
+            //     allWords = words.map(word => word.toLowerCase().trim());
+            // }).catch(function (err) {
+            //     // This code runs if there were any errors
+            //     console.log(err);
+            //     return err;
+            // });
         }
 
         str.split(' ').forEach((str, i, array) => {

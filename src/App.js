@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { GetAllPosts } from './Components/GetAllPosts.js';
-import { DataAnalyser } from './Components/DataAnalyser.js';
-import { PostSelectors } from './Components/PostSelectors.js';
+import { PostSelectors } from './Components/main_card/PostSelectors.js';
+import { Preload } from './Components/preload';
 
 const _ = require("underscore");
 
@@ -20,7 +19,11 @@ class App extends Component {
       imgDownloadPercent: 0,
       deepaiApiKey: '',
       revealNsfw: false,
-      connectionSpeed: 999
+      connectionSpeed: 999,
+      imageUrls: {
+        preloadImages: [],
+        type: 'lossless'
+      }
     };
     this.fetchBoardCatalog = this.fetchBoardCatalog.bind(this);
     this.prepareData = this.prepareData.bind(this);
@@ -34,6 +37,8 @@ class App extends Component {
     this.updateTimelineZoomLevel = this.updateTimelineZoomLevel.bind(this);
     this._showOfflineMessage = this._showOfflineMessage.bind(this);
     this._hideOfflineMessage = this._hideOfflineMessage.bind(this);
+    this.updateImageUrls = this.updateImageUrls.bind(this);
+    
   }
 
   componentDidMount() {
@@ -197,8 +202,6 @@ class App extends Component {
     });
   }
   updateImage(img) {
-    console.log("Set Image in State");
-
     this.setState({
       threadImage: img
     });
@@ -208,6 +211,13 @@ class App extends Component {
     this.setState({
       revealNsfw: true
     })
+  }
+
+  updateImageUrls(imageUrls) {
+    console.log(imageUrls);
+    this.setState({
+      imageUrls: imageUrls
+    });
   }
 
   updateTimelineZoomLevel(zoomLevel) {
@@ -255,6 +265,9 @@ class App extends Component {
             updateImage={this.updateImage}
             threadImage={this.state.threadImage}
 
+            updateImageUrls={this.updateImageUrls}
+            imageUrls={this.state.imageUrls}
+
             updateIndex={this.updateIndex}
             postIndex={this.state.postIndex}
 
@@ -267,6 +280,10 @@ class App extends Component {
             handleData={this.handleData}
           />
           )}
+          
+          <Preload imagesObj={this.state.imageUrls}/>
+
+
 
 
         </header>
