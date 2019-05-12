@@ -92,7 +92,7 @@ export class PostSelectors extends React.Component {
     let percent = Math.round(loaded / total * 100);
     console.log(this.props.imgPercent);
 
-    if (isNaN(percent)) {
+    if (!percent) {
       this.props.updateImgPercent(0);
     } else {
       this.props.updateImgPercent(Math.round(loaded / total * 100));
@@ -118,7 +118,7 @@ export class PostSelectors extends React.Component {
     // eslint-disable-next-line no-undef
     if (saveData || this.props.connectionSpeed < 3) {
       // eslint-disable-next-line no-undef
-      if (Modernizr.webp && ['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+      if (Modernizr.webp && ['.jpg', '.jpeg', '.png', '.gif'].includes(ext)) {
         imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed_webp/${tim}.webp`;
         imageUrls.type = 'compressed_webp'
       } else {
@@ -136,7 +136,7 @@ export class PostSelectors extends React.Component {
 
       setTimeout(() => {
         this.props.showProgressBar(true);
-      }, 750);  
+      }, 1000);  
 
       processing++;
       controller = new AbortController();

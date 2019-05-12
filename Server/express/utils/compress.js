@@ -56,7 +56,7 @@ let compress = {
     } else if ('.gif'.includes(fileExtension)) {
       shell.exec(`gif2webp -q 80 -mixed ${os.homedir()}/images/tmp-images/${file} -o $HOME/images/images_compressed_webp/${fileName}.webp`);
     } else {
-      console.log(`File ${file} was not processed.`);
+      shell.exec(`echo "Unable to compress ${file}." | tee -a $HOME/images/images_compressed_webp/\!log.txt`);
     }
 
   }
