@@ -37,7 +37,7 @@ let cryptoDB;
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(require('./routes'));
+// app.use(require('./routes'));
 
 owaspApp.use(compression());
 
@@ -74,7 +74,7 @@ app.use('/', express.static(path.join('/root/chan_crypto', 'build'),
       let mimeType = mime.lookup(path);
 
       if (mimeType.includes('html')) {
-        res.setHeader('Cache-Control', `public, max-age=${10}`);
+        res.setHeader('Cache-Control', `public, max-age=${5}`);
       } else if (mimeType.includes('video') || mimeType.includes('image') || mimeType.includes('audio')) {
         res.setHeader('Cache-Control', `public, max-age=${31536000}, immutable`);
       } else {
