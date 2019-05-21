@@ -45,8 +45,7 @@ router.post('/', auth.optional, async (req, res, next) => {
     finalUser.setPassword(user.password);
 
     try {
-        let v = await finalUser.save();
-        console.log(v);
+        await finalUser.save();
         res.json({ user: finalUser.toAuthJSON() });
     } catch (error) {
         next(error);

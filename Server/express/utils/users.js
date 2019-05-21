@@ -25,7 +25,7 @@ class User {
 
     validatePassword(password) {
         let hash = crypto.pbkdf2Sync(password, schema.salt, 10000, 512, 'sha512');
-        return schema.hash === hash;
+        return this.hash === hash;
     }
 
     save() {
@@ -43,7 +43,6 @@ class User {
                     salt: this.salt,
                     hash: this.hash
                 });
-                console.log(result);
 
                 resolve({ salt: this.salt, hash: this.hash, email: this.email });
             } catch (error) {
