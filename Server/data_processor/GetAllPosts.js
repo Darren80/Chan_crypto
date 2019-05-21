@@ -95,12 +95,13 @@ function saveThreadToDB(dateOfSnapshot, fullThreads) {
 async function getThreadPosts(threadNo, i = 0) {
 
   try {
+    
     const response = await fetch(cUrls.postUrls[i] + threadNo + ".json");
-
     if (response.ok) {
       const jsonResponse = await response.json();
       return jsonResponse;
     } else {
+      console.log(cUrls.postUrls[i] + threadNo + ".json");
       throw new Error(`Error, response code = ${response.status}`);
     }
   } catch (e) {
