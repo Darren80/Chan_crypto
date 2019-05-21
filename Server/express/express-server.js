@@ -37,7 +37,7 @@ let cryptoDB;
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(require('./routes'));
+app.use(require('./routes'));
 
 owaspApp.use(compression());
 
@@ -169,8 +169,8 @@ app.post('/api/timeline', async (req, res) => {
 const mainApp = express();
 
 mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
-// mainApp.use(vhost('cryptostar.ga', app));
 mainApp.use(vhost('localhost', app));
+mainApp.use(vhost('cryptostar.ga', app));
 
 const server = mainApp.listen(3000, () => console.log("Server started."));
 
