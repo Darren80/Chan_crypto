@@ -30,7 +30,7 @@ class User {
 
     save() {
         //Save to mongoDB
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 if (!this.hash || !this.salt) {
                     throw new Error('Password must first be set to save a user');
