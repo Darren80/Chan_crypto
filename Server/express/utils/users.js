@@ -12,7 +12,7 @@ class User {
         this._id = crypto.randomBytes(10).toString('hex');
         this.email = user.email;
         this.password = user.password;
-        
+
         this.hash = '';
         this.salt = '';
         this.accountsDB = accountsDB;
@@ -35,13 +35,15 @@ class User {
                 if (!this.hash || !this.salt) {
                     throw new Error('Password must first be set to save a user');
                 }
-                console.log('save to DB');
+
                 let users = this.accountsDB.collection('users');
-                users.insertOne({
+
+                let result = await users.insertOne({
                     email: this.email,
                     salt: this.salt,
                     hash: this.hash
-                })
+                });
+                console.log(result);
 
                 resolve({ salt: this.salt, hash: this.hash, email: this.email });
             } catch (error) {
