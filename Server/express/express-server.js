@@ -1,19 +1,19 @@
 const express = require('express');
 const vhost = require('vhost');
 const compression = require('compression');
+const bodyParser = require("body-parser");
+
+const os = require('os');
 const path = require('path');
 const mime = require('mime-types');
-const bodyParser = require("body-parser");
+const _ = require("underscore");
 
 const compress = require('./utils/compress');
 
-
-require('jpegtran-bin');
-const globby = require('globby');
-
-const os = require('os');
+const user = require('./utils/users').user;
+require('./utils/passport');
 // const fetch = require('node-fetch');
-const _ = require("underscore");
+
 
 const app = express();
 const owaspApp = express();
@@ -23,11 +23,23 @@ let connectedClient;
 let cryptoDB;
 
 (async () => { //Login to mongoDB
-  connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
-    useNewUrlParser: true
-  });
-  cryptoDB = connectedClient.db('crypto');
+  try {
+    connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
+      useNewUrlParser: true
+    });
+    cryptoDB = connectedClient.db('crypto');
+  } catch (error) {
+    // console.log(error);
+  }
+  
 })();
+
+app.use(compression());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(require('./routes'));
+
+owaspApp.use(compression());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
@@ -42,11 +54,6 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(compression());
-owaspApp.use(compression());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
 app.post('/compress', async (req, res, next) => {
 
   try {
@@ -58,7 +65,7 @@ app.post('/compress', async (req, res, next) => {
     console.log(e);
     res.sendStatus(500);
   }
-  
+
 });
 
 app.use('/', express.static(path.join('/root/chan_crypto', 'build'),
@@ -89,6 +96,7 @@ owaspApp.use(express.static(path.join(os.homedir(), 'owasp_site/site')));
 // });
 
 app.get('/loaderio', function (req, res) {
+  res.status(404).send('<p>404 Not Found</p>');
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
@@ -156,17 +164,19 @@ app.post('/api/timeline', async (req, res) => {
       res.json(foundDoc);
     });
   }
-})
+});
 
 const mainApp = express();
 
 mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
-mainApp.use(vhost('cryptostar.ga', app));
+// mainApp.use(vhost('cryptostar.ga', app));
+mainApp.use(vhost('localhost', app));
 
 const server = mainApp.listen(3000, () => console.log("Server started."));
 
 process.on('SIGINT', () => {
   console.info('SIGINT signal received.');
+  process.exit(0);
 
   // Stops the server from accepting new connections and finishes existing connections.
   server.close((err) => {
