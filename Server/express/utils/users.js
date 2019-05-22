@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+
 const bufIsEqual = require('../utils/bufIsEqual');
+const jwtSecret = require('../../jwtSecret');
 
 class User {
     constructor(user, accountsDB) {
@@ -58,7 +60,7 @@ class User {
             email: this.email,
             id: this._id,
             exp: parseInt(expirationDate.getTime() / 1000, 10),
-        }, 'secret');
+        }, jwtSecret);
     }
 
     toAuthJSON() {
