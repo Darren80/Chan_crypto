@@ -16,8 +16,6 @@ class User {
     setPassword(password) {
         this.salt = crypto.randomBytes(16).toString('hex');
         this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512');
-        let buf = crypto.randomBytes(256).toString('base64');
-        console.log(buf);
     }
 
     validatePassword(password) {
