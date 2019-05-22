@@ -1,30 +1,24 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-let schema = {
-    email: '',
-    hash: '',
-    salt: ''
-}
-
 class User {
     constructor(user, accountsDB) {
         this._id = crypto.randomBytes(10).toString('hex');
         this.email = user.email;
         this.password = user.password;
 
-        this.hash = '';
-        this.salt = '';
+        this.hash = user.hash || '';
+        this.salt = user.salt || '';
         this.accountsDB = accountsDB;
     }
 
     setPassword(password) {
         this.salt = crypto.randomBytes(16).toString('hex');
-        this.hash = crypto.pbkdf2Sync(password, schema.salt, 10000, 512, 'sha512');
+        this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512');
     }
 
     validatePassword(password) {
-        let hash = crypto.pbkdf2Sync(password, schema.salt, 10000, 512, 'sha512');
+        let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512');
         return this.hash === hash;
     }
 

@@ -27,7 +27,7 @@ passport.use(new LocalStrategy({
         console.log(account);
         let user = new User(account);
         if (user.validatePassword(password)) {
-
+            return done(null, 'Darren', 'user/pw is valid');
         };
     });
     // Users.findOne({ email })
@@ -38,8 +38,8 @@ passport.use(new LocalStrategy({
 
     //         return done(null, user);
     //     }).catch(done);
-    return done(null, 'Darren', 'user/pw is valid');
-    // return done(null, false, { errors: { 'password': 'is invalid' } });
+    
+    return done(null, false, { errors: { 'password': 'is invalid' } });
 }));
 
 
