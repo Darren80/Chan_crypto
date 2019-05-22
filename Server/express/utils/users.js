@@ -6,7 +6,7 @@ const jwtSecret = require('../../jwtSecret');
 
 class User {
     constructor(user, accountsDB) {
-        this._id = crypto.randomBytes(10).toString('hex');
+        // this._id = crypto.randomBytes(10).toString('hex');
         this.email = user.email;
         this.password = user.password;
 
@@ -58,14 +58,12 @@ class User {
 
         return jwt.sign({
             email: this.email,
-            id: this._id,
             exp: parseInt(expirationDate.getTime() / 1000, 10),
         }, jwtSecret);
     }
 
     toAuthJSON() {
         return {
-            _id: this._id,
             email: this.email,
             token: this.generateJWT(),
         };
