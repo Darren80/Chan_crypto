@@ -103,7 +103,7 @@ app.get('/loaderio', function (req, res) {
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
-app.get('/restart-sever', auth.required, async (req, res, next) => {
+app.get('/restart-server', auth.required, async (req, res, next) => {
   const { payload } = req;
 
   let cursor = await accountsDB.collection('users').find({ email: payload.email }).limit(1);
@@ -114,12 +114,27 @@ app.get('/restart-sever', auth.required, async (req, res, next) => {
       if (account.permissions.restart) {
         //Restart this script
         res.send('Server restarted.');
+        restartServer();
       } else {
         res.send('You do not have permission to restart the server.');
       }
     });
   }
 });
+
+function restartServer() {
+  console.log("This is pid " + process.pid);
+
+  process.on("exit", () => {
+    require("child_process").spawn(process.argv.shift(), process.argv, {
+      cwd: process.cwd(),
+      detached: true,
+      stdio: "inherit"
+    });
+  });
+  process.exit();
+
+}
 
 app.all('/api/threads', async (req, res, next) => {
   res.set({
