@@ -30,6 +30,7 @@ passport.use(new LocalStrategy({
         account.hash = account.hash.buffer;
         let user = new User(account);
         if (user.validatePassword(password)) {
+            console.log(bufIsEqual());
             return done(null, 'Darren', 'user/pw is valid');
         };
     });
