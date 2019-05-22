@@ -26,11 +26,17 @@ passport.use(new LocalStrategy({
 
     let cursor = await accountsDB.collection('users').find({ email: email}).limit(1);
 
+    if (await cursor.count() === 0) {
+        return done(null, false, { errors: { 'username': 'is invalid' } });
+    }
+
     await cursor.forEach((account) => {
         account.hash = account.hash.buffer;
         let user = new User(account);
         if (user.validatePassword(password)) {
             return done(null, 'Darren', 'user/pw is valid');
+        } else {
+            return done(null, false, { errors: { 'password': 'is invalid' } });
         };
     });
 
