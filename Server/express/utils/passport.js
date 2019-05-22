@@ -22,14 +22,17 @@ passport.use(new LocalStrategy({
     usernameField: 'user[email]',
     passwordField: 'user[password]',
 }, async (email, password, done) => {
+
     let cursor = await accountsDB.collection('users').find({ email: email}).limit(1);
+    
     await cursor.forEach((account) => {
-        console.log(account);
+        account.hash = account.hash.buffer;
         let user = new User(account);
         if (user.validatePassword(password)) {
             return done(null, 'Darren', 'user/pw is valid');
         };
     });
+
     // Users.findOne({ email })
     //     .then((user) => {
     //         if (!user || !user.validatePassword(password)) {
