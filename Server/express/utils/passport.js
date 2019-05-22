@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./users');
+const bufIsEqual = require('../utils/bufIsEqual');
 
 const MongoClient = require('mongodb').MongoClient
 let connectedClient;
@@ -24,7 +25,7 @@ passport.use(new LocalStrategy({
 }, async (email, password, done) => {
 
     let cursor = await accountsDB.collection('users').find({ email: email}).limit(1);
-    
+
     await cursor.forEach((account) => {
         account.hash = account.hash.buffer;
         let user = new User(account);
