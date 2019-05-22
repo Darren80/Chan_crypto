@@ -21,8 +21,7 @@ class User {
     validatePassword(password) {
         let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512');
         console.log(password, this.salt, this.hash, hash);
-        console.log(bufIsEqual(this.hash, hash));
-        return this.hash === hash;
+        return bufIsEqual(this.hash, hash);
     }
 
     save() {
