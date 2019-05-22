@@ -32,6 +32,14 @@ router.post('/', auth.optional, async (req, res, next) => {
         });
     }
 
+    if (!user.email.match(/^\S+@\S+$/)) {
+        return res.status(422).json({
+            errors: {
+                email: 'is malformed',
+            },
+        });
+    }
+
     if (!user.password) {
         return res.status(422).json({
             errors: {
