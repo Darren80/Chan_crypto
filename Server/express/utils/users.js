@@ -35,12 +35,15 @@ class User {
                 }
 
                 let users = this.accountsDB.collection('users');
-
-                let result = await users.insertOne({
+                //Make and save a new user to the database
+                await users.insertOne({
                     email: this.email,
                     salt: this.salt,
                     hash: this.hash,
-                    validated: false
+                    validated: false,
+                    permissions: {
+                        
+                    }
                 });
 
                 resolve({ salt: this.salt, hash: this.hash, email: this.email });
