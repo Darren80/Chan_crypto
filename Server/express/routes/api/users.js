@@ -8,15 +8,15 @@ let connectedClient;
 let accountsDB;
 
 (async () => { //Login to mongoDB
-  try {
-    connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
-      useNewUrlParser: true
-    });
-    accountsDB = connectedClient.db('accounts');
-  } catch (error) {
-    // console.log(error);
-  }
-  
+    try {
+        connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
+            useNewUrlParser: true
+        });
+        accountsDB = connectedClient.db('accounts');
+    } catch (error) {
+        // console.log(error);
+    }
+
 })();
 
 //POST new user route (optional, everyone has access)
@@ -100,18 +100,20 @@ router.post('/login', auth.optional, (req, res, next) => {
 });
 
 //GET current route (required, only authenticated users have access)
-router.get('/current', auth.required, (req, res, next) => {
-    const { payload: { id } } = req;
-    console.log(id);
+router.get('/current', auth.required, async (req, res, next) => {
+    const { payload } = req;
+    console.log(payload);
 
-    return User.findById(id)
-        .then((user) => {
-            if (!user) {
-                return res.sendStatus(400);
-            }
-
-            return res.json({ user: user.toAuthJSON() });
+    let cursor = await accountsDB.collection('users').find({ email: payload.email });
+    if (await cursor.count() === 0) {
+        return res.sendStatus(400);
+    } else {
+        await cursor.forEach((account) => {
+            console.log(account);
         });
+    }
+    let user = new User(payload);
+    return res.json({ user: user.toAuthJSON() });
 });
 
 //Error handler
