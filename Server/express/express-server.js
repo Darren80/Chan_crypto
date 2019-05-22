@@ -111,7 +111,7 @@ app.get('/restart-sever', auth.required, async (req, res, next) => {
     return res.status(400).send('Account does not exist');
   } else {
     await cursor.forEach((account) => {
-      if (account.permissions.restart === true) {
+      if (account.permissions.restart) {
         //Restart this script
         res.send('Server restarted.');
       } else {
