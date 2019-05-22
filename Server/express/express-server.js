@@ -2,7 +2,7 @@ const express = require('express');
 const vhost = require('vhost');
 const compression = require('compression');
 const bodyParser = require("body-parser");
-const auth = require('../auth');
+const auth = require('./routes/auth');
 
 const os = require('os');
 const path = require('path');
