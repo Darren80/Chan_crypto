@@ -22,6 +22,7 @@ const owaspApp = express();
 const MongoClient = require('mongodb').MongoClient
 let connectedClient;
 let cryptoDB;
+let accountsDB;
 
 (async () => { //Login to mongoDB
   try {
@@ -29,10 +30,11 @@ let cryptoDB;
       useNewUrlParser: true
     });
     cryptoDB = connectedClient.db('crypto');
+    accountsDB = connectedClient.db('accounts');
   } catch (error) {
     // console.log(error);
   }
-  
+
 })();
 
 app.use(compression());
@@ -99,6 +101,24 @@ owaspApp.use(express.static(path.join(os.homedir(), 'owasp_site/site')));
 app.get('/loaderio', function (req, res) {
   res.status(404).send('<p>404 Not Found</p>');
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
+});
+
+app.get('/restart-sever', auth.required, async (req, res, next) => {
+  const { payload } = req;
+
+  let cursor = await accountsDB.collection('users').find({ email: payload.email }).limit(1);
+  if (await cursor.count() === 0) {
+    return res.status(400).send('Account does not exist');
+  } else {
+    await cursor.forEach((account) => {
+      if (account.permissions.restart === true) {
+        //Restart this script
+        res.send('Server restarted.');
+      } else {
+        res.send('You do not have permission to restart the server.');
+      }
+    });
+  }
 });
 
 app.all('/api/threads', async (req, res, next) => {

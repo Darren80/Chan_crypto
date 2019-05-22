@@ -102,18 +102,21 @@ router.post('/login', auth.optional, (req, res, next) => {
 //GET current route (required, only authenticated users have access)
 router.get('/current', auth.required, async (req, res, next) => {
     const { payload } = req;
-    console.log(payload);
+    let user = new User(payload);
 
     let cursor = await accountsDB.collection('users').find({ email: payload.email });
     if (await cursor.count() === 0) {
-        return res.sendStatus(400);
+        return res.status(400).send('Account does not exist');
     } else {
         await cursor.forEach((account) => {
-            console.log(account);
+            if (!account.validated) {
+                res.json({ user: user.toAuthJSON(), message: 'Great, you are logged in, don\'t forget to email verify your account.' });
+            } else {
+                res.json({ user: user.toAuthJSON(), message: 'Great, you are logged in.' });
+            }
         });
     }
-    let user = new User(payload);
-    return res.json({ user: user.toAuthJSON() });
+    return res.status(400);
 });
 
 //Error handler
