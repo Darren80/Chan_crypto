@@ -108,14 +108,13 @@ app.post('/server-control', auth.required, async (req, res, next) => {
   const { payload } = req;
 
   let account = await findUser(payload.email);
-  console.log(req.body);
-  console.log(req);
+
   if (!account) {
     return res.status(400).send('Account does not exist');
   }
 
   let noPerms = (action) => {
-    return `Permissions needed to: ${action} the server.`
+    return `Permissions needed to: ${action} the server.`;
   }
 
   let intendedAction = req.body.action;
