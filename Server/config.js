@@ -16,7 +16,10 @@ let paths = {
     imageOptimserEntryScript: '$HOME/startImgOpti.sh'
 }
 
+let connectedClient;
+
 module.exports = {
     urls,
-    paths
+    paths,
+    connectedClient
 };

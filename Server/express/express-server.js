@@ -8,6 +8,7 @@ const os = require('os');
 const path = require('path');
 const mime = require('mime-types');
 const _ = require("underscore");
+const config = require("../config");
 
 const compress = require('./utils/compress');
 
@@ -20,21 +21,23 @@ const app = express();
 const owaspApp = express();
 
 const MongoClient = require('mongodb').MongoClient
-let connectedClient;
 let cryptoDB;
 let accountsDB;
-
-(async () => { //Login to mongoDB
+(async () => {
   try {
-    connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
+    let connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
       useNewUrlParser: true
     });
+
     cryptoDB = connectedClient.db('crypto');
     accountsDB = connectedClient.db('accounts');
-  } catch (error) {
-    // console.log(error);
-  }
+    config.connectedClient = connectedClient;
+    app.emit('ready');
 
+  } catch (error) {
+    console.log(error);
+    process.exit(2);
+  }
 })();
 
 app.use(compression());
@@ -122,6 +125,25 @@ app.get('/restart-server', auth.required, async (req, res, next) => {
   }
 });
 
+app.get('/stop-server', auth.required, async (req, res, next) => {
+  const { payload } = req;
+
+  let cursor = await accountsDB.collection('users').find({ email: payload.email }).limit(1);
+  if (await cursor.count() === 0) {
+    return res.status(400).send('Account does not exist');
+  } else {
+    await cursor.forEach((account) => {
+      if (account.permissions.stop) {
+        //Restart this script
+        res.send('Server stopeed.');
+        stopServer();
+      } else {
+        res.send('You do not have permission to restart the server.');
+      }
+    });
+  }
+});
+
 function restartServer() {
   console.log("This is pid " + process.pid);
 
@@ -133,40 +155,32 @@ function restartServer() {
     });
   });
   process.exit();
-
 }
 
-app.all('/api/threads', async (req, res, next) => {
-  res.set({
-    'Cache-Control': 'public, max-age=30, immutable'
-  });
-  next();
-})
-app.all('/api/timeline', async (req, res, next) => {
-  res.set({
-    'Cache-Control': 'public, max-age=30, immutable'
-  });
-  next();
-})
+function stopServer() {
+  console.log("This is pid " + process.pid);
 
-app.get('/api/threads', async (req, res) => {
+  process.exit();
+}
 
-  if (!connectedClient) {
-    throw new Error('mongoDB database not connected.')
-  }
+// app.get('/api/threads', async (req, res) => {
 
-  let cursor = await cryptoDB.collection('computedThreads').find().sort({ date: -1 }).limit(1);
+//   if (!config.connectedClient) {
+//     throw new Error('mongoDB database not connected.')
+//   }
 
-  let document = {};
-  await cursor.forEach(doc => {
-    document.threads = doc.threads;
-    document.date = doc.date;
-  });
-  //Assuming threads is an array
-  // document.threads = document.threads.slice(0, 45);
+//   let cursor = await cryptoDB.collection('computedThreads').find().sort({ date: -1 }).limit(1);
 
-  res.json(document);
-});
+//   let document = {};
+//   await cursor.forEach(doc => {
+//     document.threads = doc.threads;
+//     document.date = doc.date;
+//   });
+//   //Assuming threads is an array
+//   // document.threads = document.threads.slice(0, 45);
+
+//   res.json(document);
+// });
 
 app.get('/api/timeline', async (req, res) => {
 
@@ -208,7 +222,10 @@ mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
 mainApp.use(vhost('localhost', app));
 mainApp.use(vhost('cryptostar.ga', app));
 
-const server = mainApp.listen(3000, () => console.log("Server started."));
+const server;
+app.on('ready', function() { 
+  server = mainApp.listen(3000, () => console.log("Server started."));
+}); 
 
 process.on('SIGINT', () => {
   console.info('SIGINT signal received.');
