@@ -108,7 +108,7 @@ app.post('/server-control', auth.required, async (req, res, next) => {
   const { payload } = req;
 
   let account = await findUser(payload.email);
-  
+  console.log(account);
   if (!account) {
     return res.status(400).send('Account does not exist');
   }
@@ -145,13 +145,14 @@ app.post('/server-control', auth.required, async (req, res, next) => {
 
 async function findUser(email) {
 
-  console.log(email);
   let cursor = await accountsDB.collection('users').find({ email: email }).limit(1);
 
   if (await cursor.count() === 0) { //No users found
+    console.log(await cursor.count());
     return false;
   } else {
     await cursor.forEach((userAccount) => {
+      console.log(userAccount);
       return userAccount;
     });
   }
