@@ -1,13 +1,11 @@
 const router = require('express').Router();
-const config = require("../../../config");
+const connectedClient = require("../../../config").connectedClient;
 
-const MongoClient = require('mongodb').MongoClient
-let connectedClient;
-let cryptoDB;
+let cryptoDB = connectedClient.db('crypto');;
 
 (async () => {
 
-    cryptoDB = config.connectedClient.db('crypto');
+    
 
 })();
 
@@ -16,7 +14,7 @@ router.use(async (req, res, next) => {
         'Cache-Control': 'public, max-age=30, immutable'
     });
 
-    if (!config.connectedClient) {
+    if (!connectedClient) {
         throw new Error('mongoDB database not connected.')
     }
 
