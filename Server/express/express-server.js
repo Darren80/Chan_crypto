@@ -30,7 +30,7 @@ console.log(config.connectedClient);
 
     cryptoDB = connectedClient.db('crypto');
     accountsDB = connectedClient.db('accounts');
-    app.emit('ready');
+    console.log(process.argv);
 
   } catch (error) {
     console.log(error);
