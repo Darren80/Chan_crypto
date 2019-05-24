@@ -109,6 +109,7 @@ app.post('/server-control', auth.required, async (req, res, next) => {
 
   let account = await findUser(payload.email);
   console.log(req.body);
+  console.log(req);
   if (!account) {
     return res.status(400).send('Account does not exist');
   }
