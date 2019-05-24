@@ -12,6 +12,8 @@ token=$( curl -S -XPOST -H "Content-type: application/json" -d '{
 token="Token $token"
 echo $token
 
+sleep 2.5s
+
 curl -S -XGET -H "Authorization: $token" 'https://cryptostar.ga/restart-server'
 
 read -n 1 -s -r -p "Press any key to exit"
