@@ -151,26 +151,24 @@ function restartServer() {
     const args = [];
     let cp = require("child_process")
     // Checks the status of a single port
-    portscanner.checkPortStatus(7000, '127.0.0.1', function (error, status) {
+    portscanner.checkPortStatus(7010, '127.0.0.1', function (error, status) {
       if (status === 'closed') {
-        args = ['--inspect=7000', file];
+        args = ['--inspect=7010', file];
         cp.spawn(process.execPath, args, {
           cwd: process.cwd(),
           detached: true,
           stdio: "inherit"
         });
-        return;
       }
     });
-    portscanner.checkPortStatus(7001, '127.0.0.1', function (error, status) {
+    portscanner.checkPortStatus(7011, '127.0.0.1', function (error, status) {
       if (status === 'closed') {
-        args = ['--inspect=7001', file];
+        args = ['--inspect=7011', file];
         cp.spawn(process.execPath, args, {
           cwd: process.cwd(),
           detached: true,
           stdio: "inherit"
         });
-        return;
       }
     });
 
