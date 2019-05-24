@@ -108,7 +108,7 @@ app.post('/server-control', auth.required, async (req, res, next) => {
   const { payload } = req;
 
   let account = await findUser(payload.email);
-  console.log(account);
+  console.log(req.body);
   if (!account) {
     return res.status(400).send('Account does not exist');
   }
@@ -139,6 +139,7 @@ app.post('/server-control', auth.required, async (req, res, next) => {
       break;
 
     default:
+        res.send('Choose an action to perform');
       break;
   }
 });
