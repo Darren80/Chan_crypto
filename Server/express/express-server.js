@@ -23,7 +23,6 @@ const owaspApp = express();
 let connectedClient = config.connectedClient;
 let cryptoDB;
 let accountsDB;
-console.log(config.connectedClient);
 
 (async () => {
   try {
@@ -146,7 +145,7 @@ function restartServer() {
   console.log("This is pid " + process.pid);
 
   process.on("exit", () => {
-    require("child_process").spawn(process.argv.shift(), process.argv, {
+    require("child_process").spawn(process.argv.shift(), process.argv.slice(0).push('--inspect=7010'), {
       cwd: process.cwd(),
       detached: true,
       stdio: "inherit"
