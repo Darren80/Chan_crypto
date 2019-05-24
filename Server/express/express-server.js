@@ -146,7 +146,7 @@ function restartServer() {
   console.log("This is pid " + process.pid);
 
   process.on("exit", () => {
-    
+
     const file = path.resolve('./express-server.js');
     const args = [];
     let cp = require("child_process")
@@ -154,14 +154,22 @@ function restartServer() {
     portscanner.checkPortStatus(7000, '127.0.0.1', function (error, status) {
       if (status === 'closed') {
         args = ['--inspect=7000', file];
-        cp.spawn(process.execPath, args);
+        cp.spawn(process.execPath, args, {
+          cwd: process.cwd(),
+          detached: true,
+          stdio: "inherit"
+        });
         return;
       }
     });
     portscanner.checkPortStatus(7001, '127.0.0.1', function (error, status) {
       if (status === 'closed') {
         args = ['--inspect=7001', file];
-        cp.spawn(process.execPath, args);
+        cp.spawn(process.execPath, args, {
+          cwd: process.cwd(),
+          detached: true,
+          stdio: "inherit"
+        });
         return;
       }
     });
