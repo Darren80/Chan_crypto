@@ -145,19 +145,16 @@ app.post('/server-control', auth.required, async (req, res, next) => {
 
 async function findUser(email) {
 
+  let account;
   let cursor = await accountsDB.collection('users').find({ email: email }).limit(1);
 
-  if (await cursor.count() === 0) { //No users found
-    console.log(await cursor.count());
-    return false;
-  } else {
+  if (await cursor.count() === 1) {
     await cursor.forEach((userAccount) => {
-      console.log(userAccount);
-      return userAccount;
+      account = userAccount;
     });
   }
 
-  return false;
+  return account;
 }
 
 function restartServer() {
