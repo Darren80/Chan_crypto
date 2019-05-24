@@ -14,7 +14,7 @@ echo $token
 
 sleep 2.5s
 
-curl -S -XPOST -H "Authorization: $token" -d '{
+curl -S -XPOST -H "Authorization: $token" -H "Content-type: application/json" -d '{
     "action": "restart"
 }' 'https://cryptostar.ga/server-control'
 
