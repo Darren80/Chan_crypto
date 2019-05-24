@@ -42,7 +42,7 @@ export class Timeline extends React.Component {
 
         let getKeys = async () => {
             try {
-                const response = await fetch('https://cryptostar.ga/api/timeline');
+                const response = await fetch('https://cryptostar.ga/api/threads/timeline');
                 if (response.ok) {
                     const responseJson = await response.json();
 
@@ -169,7 +169,7 @@ export class Timeline extends React.Component {
 
         timeline.on('select', async (properties) => {
             try {
-                let response = await fetch('https://cryptostar.ga/api/timeline', {
+                let response = await fetch('https://cryptostar.ga/api/threads/timeline', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

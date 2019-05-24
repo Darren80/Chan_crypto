@@ -5,7 +5,7 @@ let cryptoDB = connectedClient.db('crypto');;
 
 (async () => {
 
-    
+
 
 })();
 
@@ -40,6 +40,38 @@ router.get('/', async (req, res, next) => {
     res.json(document);
 });
 
+router.get('/timeline', async (req, res) => {
 
+    let past7days = new Date();
+    let past14days = new Date();
+
+    past7days.setDate(past7days.getDate() - 7);
+    past14days.setDate(past14days.getDate() - 14);
+
+    let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() } }).project({ date: 1 }).limit(10000);
+
+    let acrhivalDates = [];
+    await computedCursor.forEach(date => {
+        acrhivalDates.push(new Date(date.date));
+    })
+
+    res.json(acrhivalDates);
+
+});
+
+router.post('/timeline', async (req, res) => {
+
+    let dateToFind = new Date(req.body.date);
+
+    let computedCursor = await cryptoDB.collection('computedThreads').find({ date: dateToFind.getTime() }).limit(1);
+
+    if (await computedCursor.count() === 0) {
+        res.status(404).json('That item does not exist.');
+    } else {
+        await computedCursor.forEach(foundDoc => {
+            res.json(foundDoc);
+        });
+    }
+});
 
 module.exports = router;

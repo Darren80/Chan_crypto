@@ -72,7 +72,7 @@ app.post('/compress', async (req, res, next) => {
 
 });
 
-app.use('/', express.static(path.join('/root/chan_crypto', 'build'),
+app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build'),
   {
     setHeaders: (res, path) => {
       let mimeType = mime.lookup(path);
@@ -146,7 +146,6 @@ function restartServer() {
   console.log("Server Restarted");
 
   shell.exec('pm2 restart "Express Server"');
-
 }
 
 function stopServer() {
@@ -155,58 +154,39 @@ function stopServer() {
   shell.exec('pm2 delete "Express Server"');
 }
 
-// app.get('/api/threads', async (req, res) => {
+// app.get('/api/timeline', async (req, res) => {
 
-//   if (!config.connectedClient) {
-//     throw new Error('mongoDB database not connected.')
-//   }
+//   let past7days = new Date();
+//   let past14days = new Date();
 
-//   let cursor = await cryptoDB.collection('computedThreads').find().sort({ date: -1 }).limit(1);
+//   past7days.setDate(past7days.getDate() - 7);
+//   past14days.setDate(past14days.getDate() - 14);
 
-//   let document = {};
-//   await cursor.forEach(doc => {
-//     document.threads = doc.threads;
-//     document.date = doc.date;
-//   });
-//   //Assuming threads is an array
-//   // document.threads = document.threads.slice(0, 45);
+//   let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() } }).project({ date: 1 }).limit(10000);
 
-//   res.json(document);
+//   let acrhivalDates = [];
+//   await computedCursor.forEach(date => {
+//     acrhivalDates.push(new Date(date.date));
+//   })
+
+//   res.json(acrhivalDates);
+
 // });
 
-app.get('/api/timeline', async (req, res) => {
+// app.post('/api/timeline', async (req, res) => {
 
-  let past7days = new Date();
-  let past14days = new Date();
+//   let dateToFind = new Date(req.body.date);
 
-  past7days.setDate(past7days.getDate() - 7);
-  past14days.setDate(past14days.getDate() - 14);
+//   let computedCursor = await cryptoDB.collection('computedThreads').find({ date: dateToFind.getTime() }).limit(1);
 
-  let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() } }).project({ date: 1 }).limit(10000);
-
-  let acrhivalDates = [];
-  await computedCursor.forEach(date => {
-    acrhivalDates.push(new Date(date.date));
-  })
-
-  res.json(acrhivalDates);
-
-});
-
-app.post('/api/timeline', async (req, res) => {
-
-  let dateToFind = new Date(req.body.date);
-
-  let computedCursor = await cryptoDB.collection('computedThreads').find({ date: dateToFind.getTime() }).limit(1);
-
-  if (await computedCursor.count() === 0) {
-    res.status(404).json('That item does not exist.');
-  } else {
-    await computedCursor.forEach(foundDoc => {
-      res.json(foundDoc);
-    });
-  }
-});
+//   if (await computedCursor.count() === 0) {
+//     res.status(404).json('That item does not exist.');
+//   } else {
+//     await computedCursor.forEach(foundDoc => {
+//       res.json(foundDoc);
+//     });
+//   }
+// });
 
 const mainApp = express();
 
