@@ -23,6 +23,7 @@ const owaspApp = express();
 let connectedClient = config.connectedClient;
 let cryptoDB;
 let accountsDB;
+console.log(config.connectedClient);
 
 (async () => {
   try {
