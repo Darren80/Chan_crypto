@@ -104,43 +104,59 @@ app.get('/loaderio', function (req, res) {
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
-app.get('/restart-server', auth.required, async (req, res, next) => {
+app.post('/server-control', auth.required, async (req, res, next) => {
   const { payload } = req;
 
-  let cursor = await accountsDB.collection('users').find({ email: payload.email }).limit(1);
-  if (await cursor.count() === 0) {
+  let account = await findUser(payload.email);
+  
+  if (!account) {
     return res.status(400).send('Account does not exist');
-  } else {
-    await cursor.forEach((account) => {
+  }
+
+  let noPerms = (action) => {
+    return `Permissions needed to: ${action} the server.`
+  }
+
+  let intendedAction = req.body.action;
+
+  switch (intendedAction) {
+    case 'restart':
       if (account.permissions.restart) {
-        //Restart this script
         res.send('Server restarted.');
         restartServer();
       } else {
-        res.send('You do not have permission to restart the server.');
+        res.send(noPerms('restart'));
       }
-    });
-  }
-});
+      break;
 
-app.get('/stop-server', auth.required, async (req, res, next) => {
-  const { payload } = req;
-
-  let cursor = await accountsDB.collection('users').find({ email: payload.email }).limit(1);
-  if (await cursor.count() === 0) {
-    return res.status(400).send('Account does not exist');
-  } else {
-    await cursor.forEach((account) => {
+    case 'stop':
       if (account.permissions.stop) {
-        //Restart this script
-        res.send('Server stopeed.');
+        res.send('Server stopped.');
         stopServer();
       } else {
-        res.send('You do not have permission to restart the server.');
+        res.send(noPerms('stop'));
       }
-    });
+      break;
+
+    default:
+      break;
   }
 });
+
+async function findUser(email) {
+
+  let cursor = await accountsDB.collection('users').find({ email: email }).limit(1);
+
+  if (await cursor.count() === 0) { //No users found
+    return false;
+  } else {
+    await cursor.forEach((userAccount) => {
+      return userAccount;
+    });
+  }
+
+  return false;
+}
 
 function restartServer() {
   console.log("Server Restarted");
@@ -153,40 +169,6 @@ function stopServer() {
 
   shell.exec('pm2 delete "Express Server"');
 }
-
-// app.get('/api/timeline', async (req, res) => {
-
-//   let past7days = new Date();
-//   let past14days = new Date();
-
-//   past7days.setDate(past7days.getDate() - 7);
-//   past14days.setDate(past14days.getDate() - 14);
-
-//   let computedCursor = await cryptoDB.collection('computedThreads').find({ date: { $gt: past14days.getTime() } }).project({ date: 1 }).limit(10000);
-
-//   let acrhivalDates = [];
-//   await computedCursor.forEach(date => {
-//     acrhivalDates.push(new Date(date.date));
-//   })
-
-//   res.json(acrhivalDates);
-
-// });
-
-// app.post('/api/timeline', async (req, res) => {
-
-//   let dateToFind = new Date(req.body.date);
-
-//   let computedCursor = await cryptoDB.collection('computedThreads').find({ date: dateToFind.getTime() }).limit(1);
-
-//   if (await computedCursor.count() === 0) {
-//     res.status(404).json('That item does not exist.');
-//   } else {
-//     await computedCursor.forEach(foundDoc => {
-//       res.json(foundDoc);
-//     });
-//   }
-// });
 
 const mainApp = express();
 
