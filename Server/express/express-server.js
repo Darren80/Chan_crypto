@@ -20,18 +20,15 @@ require('./utils/passport');
 const app = express();
 const owaspApp = express();
 
-const MongoClient = require('mongodb').MongoClient
+let connectedClient = config.connectedClient;
 let cryptoDB;
 let accountsDB;
+
 (async () => {
   try {
-    let connectedClient = await MongoClient.connect('mongodb://AdminDarren:AdminDarren\'sSecurePassword@localhost:27017/?ssl=true', {
-      useNewUrlParser: true
-    });
 
     cryptoDB = connectedClient.db('crypto');
     accountsDB = connectedClient.db('accounts');
-    config.connectedClient = connectedClient;
     app.emit('ready');
 
   } catch (error) {

@@ -10,7 +10,7 @@ sudo service nginx reload
 fstab template command:
 echo '/dev/DISK /mnt/FOLDER ext4 defaults,nofail,discard 0 0' | sudo tee -a /etc/fstab
 
-ssh -L 19999:127.0.0.1:19999 `
+ssh -q -L 19999:127.0.0.1:19999 `
 -L 8088:127.0.0.1:8088 `
 -L 7000:127.0.0.1:7000 `
 -L 7010:127.0.0.1:7010 `
