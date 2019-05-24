@@ -2,7 +2,16 @@ git add .
 git commit -am "Auto Push"
 git push origin master
 
-#Remote reload
-curl -v -XGET -H 'Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IndlNDQ0NDY1QGdtYWlsLmNvbSIsImV4cCI6MTU2Mzc0MjUxNSwiaWF0IjoxNTU4NTU4NTE1fQ.xQqg03KDqg70dxKD4LlfWNVNVWcpT-0c9gswzm-wJlc' -H "Content-type: application/json" 'https://cryptostar.ga/restart-server'
+# Remote reload
+token=$( curl -S -XPOST -H "Content-type: application/json" -d '{
+    "user": {
+        "email": "we444465@gmail.com",
+        "password": "secretpw"
+    }
+}' 'https://cryptostar.ga/api/users/login' | ./jq '.user.token' -r )
+token="Token $token"
+echo $token
+
+curl -S -XGET -H "Authorization: $token" 'https://cryptostar.ga/restart-server'
 
 read -n 1 -s -r -p "Press any key to exit"
