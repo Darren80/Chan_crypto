@@ -1,5 +1,5 @@
 const config = require("../config");
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 
 (async () => {
     try {
