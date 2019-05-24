@@ -221,9 +221,9 @@ mainApp.use(vhost('localhost', app));
 mainApp.use(vhost('cryptostar.ga', app));
 
 let server;
-app.on('ready', function() { 
-  server = mainApp.listen(3000, () => console.log("Server started."));
-}); 
+
+server = mainApp.listen(3000, () => console.log("Server started."));
+
 
 process.on('SIGINT', () => {
   console.info('SIGINT signal received.');
