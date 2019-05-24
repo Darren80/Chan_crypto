@@ -222,7 +222,7 @@ mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
 mainApp.use(vhost('localhost', app));
 mainApp.use(vhost('cryptostar.ga', app));
 
-const server;
+let server;
 app.on('ready', function() { 
   server = mainApp.listen(3000, () => console.log("Server started."));
 }); 
