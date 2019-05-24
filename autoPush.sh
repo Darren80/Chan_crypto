@@ -14,6 +14,8 @@ echo $token
 
 sleep 2.5s
 
-curl -S -XGET -H "Authorization: $token" 'https://cryptostar.ga/restart-server'
+curl -S -XPOST -H "Authorization: $token" -d '{
+    "action": "restart"
+}' 'https://cryptostar.ga/server-control'
 
 read -n 1 -s -r -p "Press any key to exit"
