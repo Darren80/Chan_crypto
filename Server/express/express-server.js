@@ -145,6 +145,7 @@ app.post('/server-control', auth.required, async (req, res, next) => {
 
 async function findUser(email) {
 
+  console.log(email);
   let cursor = await accountsDB.collection('users').find({ email: email }).limit(1);
 
   if (await cursor.count() === 0) { //No users found
