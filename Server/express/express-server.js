@@ -3,7 +3,7 @@ const vhost = require('vhost');
 const compression = require('compression');
 const bodyParser = require("body-parser");
 const auth = require('./routes/auth');
-const portscanner = require('portscanner')
+const shell = require('shelljs');
 
 const os = require('os');
 const path = require('path');
@@ -143,49 +143,16 @@ app.get('/stop-server', auth.required, async (req, res, next) => {
 });
 
 function restartServer() {
-  console.log("This is pid " + process.pid);
+  console.log("Server Restarted");
 
-  process.on("exit", () => {
+  shell.exec('pm2 restart "Express Server"');
 
-    const file = path.resolve('./express-server.js');
-    const args = [];
-    let cp = require("child_process")
-    // Checks the status of a single port
-    portscanner.checkPortStatus(7010, '127.0.0.1', function (error, status) {
-      if (status === 'closed') {
-        args = ['--inspect=7010', file];
-        cp.spawn(process.execPath, args, {
-          cwd: process.cwd(),
-          detached: true,
-          stdio: "inherit"
-        });
-      }
-    });
-    portscanner.checkPortStatus(7011, '127.0.0.1', function (error, status) {
-      if (status === 'closed') {
-        args = ['--inspect=7011', file];
-        cp.spawn(process.execPath, args, {
-          cwd: process.cwd(),
-          detached: true,
-          stdio: "inherit"
-        });
-      }
-    });
-
-    // require("child_process").spawn(process.argv.shift(), process.argv.slice(0).push('--inspect=7010'), {
-    //   cwd: process.cwd(),
-    //   detached: true,
-    //   stdio: "inherit"
-    // });
-
-  });
-  process.exit();
 }
 
 function stopServer() {
-  console.log("This is pid " + process.pid);
+  console.log("Server Stopped");
 
-  process.exit();
+  shell.exec('pm2 delete "Express Server"');
 }
 
 // app.get('/api/threads', async (req, res) => {
