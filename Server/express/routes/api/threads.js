@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const config = require("../config");
+const config = require("../../../config");
 
 const MongoClient = require('mongodb').MongoClient
 let connectedClient;
