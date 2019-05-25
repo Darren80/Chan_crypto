@@ -6,7 +6,7 @@ const jwtSecret = require('../../jwtSecret');
 
 class User {
     constructor(user, accountsDB) {
-        // this._id = crypto.randomBytes(10).toString('hex');
+
         this.email = user.email;
         this.password = user.password;
 
@@ -16,24 +16,30 @@ class User {
     }
 
     setPassword(password) {
+        if (!password) {
+            throw new Error('Password must first be set to create a hash');
+        }
         this.salt = crypto.randomBytes(16).toString('hex');
         this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512');
     }
 
     validatePassword(password) {
         let hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512');
-        console.log(password, this.salt, this.hash, hash);
         return bufIsEqual(this.hash, hash);
     }
 
     save() {
+
+        // this.setPassword(this.password);
+
         //Save to mongoDB
         return new Promise(async (resolve, reject) => {
-            try {
-                if (!this.hash || !this.salt) {
-                    throw new Error('Password must first be set to save a user');
-                }
 
+            if (!this.hash || !this.salt || !this.email) {
+                reject('Necessay values are missing.');
+            }
+
+            try {
                 let users = this.accountsDB.collection('users');
                 //Make and save a new user to the database
                 await users.insertOne({
@@ -42,10 +48,9 @@ class User {
                     hash: this.hash,
                     validated: false,
                     permissions: {
-                        
+
                     }
                 });
-
                 resolve({ salt: this.salt, hash: this.hash, email: this.email });
             } catch (error) {
                 reject(`${error}`);
@@ -53,7 +58,7 @@ class User {
 
         });
     }
-
+    
     generateJWT() {
         const today = new Date();
         const expirationDate = new Date(today);

@@ -95,9 +95,6 @@ app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build
 // })
 
 owaspApp.use(express.static(path.join(os.homedir(), 'owasp_site/site')));
-// owaspApp.get('/', async (req, res, next) => {
-//   res.sendFile(path.join(os.homedir(), 'CheatSheetSeries-master/generated/site/index.html'));
-// });
 
 app.get('/loaderio', function (req, res) {
   res.status(404).send('<p>404 Not Found</p>');
@@ -139,7 +136,7 @@ app.post('/server-control', auth.required, async (req, res, next) => {
       break;
 
     default:
-        res.send('Choose an action to perform');
+      res.send('Choose an action to perform.');
       break;
   }
 });
@@ -176,9 +173,7 @@ mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
 mainApp.use(vhost('localhost', app));
 mainApp.use(vhost('cryptostar.ga', app));
 
-let server;
-
-server = mainApp.listen(3000, () => console.log("Server started."));
+let server = mainApp.listen(3000, () => console.log("Server started."));
 
 
 process.on('SIGINT', () => {

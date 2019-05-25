@@ -1,11 +1,9 @@
 const router = require('express').Router();
-const connectedClient = require("../../../config").connectedClient;
 
+const connectedClient = require("../../../config").connectedClient;
 let cryptoDB = connectedClient.db('crypto');;
 
 (async () => {
-
-
 
 })();
 
@@ -22,10 +20,6 @@ router.use(async (req, res, next) => {
 });
 
 router.get('/', async (req, res, next) => {
-
-    if (!connectedClient) {
-        throw new Error('mongoDB database not connected.')
-    }
 
     let cursor = await cryptoDB.collection('computedThreads').find().sort({ date: -1 }).limit(1);
 
