@@ -78,7 +78,7 @@ router.post('/login', auth.optional, (req, res, next) => {
             let user = new User(loginCredentials);
             return res.json({ user: user.toAuthJSON() });
         }
-
+        console.log('WOOO');
         return res.status(400).json(info);
     })(req, res, next);
 });
