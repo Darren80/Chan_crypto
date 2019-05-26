@@ -87,10 +87,10 @@ app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build
     }
   }));
 
-app.use('/analytics', express.static('/root/analytics/matomo', {
-  index: 'index.php',
-  fallthrough: false
-}));
+// app.use('/analytics', express.static('/root/analytics/matomo', {
+//   index: 'index.php',
+//   fallthrough: false
+// }));
 
 // owaspApp.use(function (req, res, next) {
 //   console.log(req);
