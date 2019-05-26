@@ -6,7 +6,7 @@ import img404 from '../../1024px-No_image_available.svg.png';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 import { Timeline } from '../display/timeline.js';
 
-
+import ReactGA from 'react-ga';
 
 import { CardDetails } from './cardDetails';
 // const Modernizr = require("../modernizr");
@@ -251,11 +251,23 @@ export class PostSelectors extends React.Component {
           />
 
           <button onClick={() => this.props.updateIndex(this.props.postIndex - 10)}>Left 10</button>
-          <button onClick={() => this.props.updateIndex(this.props.postIndex - 1)}>Left</button>
+          <button onClick={() => { 
+            this.props.updateIndex(this.props.postIndex - 1);
+            ReactGA.event({
+              category: 'User',
+              action: 'Back'
+            });
+            }}>Left</button>
           <a href={`https://boards.4channel.org/biz/thread/${getLink()}`} target="_blank" rel="noopener noreferrer">
             <button>Go</button>
           </a>
-          <button onClick={() => this.props.updateIndex(this.props.postIndex + 1)}>Right</button>
+          <button onClick={() => {
+            this.props.updateIndex(this.props.postIndex + 1);
+            ReactGA.event({
+              category: 'User',
+              action: 'Forward'
+            });
+          }}>Right</button>
           <button onClick={() => this.props.updateIndex(this.props.postIndex + 10)}>Right 10</button>
 
           <CardDetails
