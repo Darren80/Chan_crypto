@@ -18,4 +18,4 @@ curl -S -XPOST -H "Authorization: $token" -H "Content-type: application/json" -d
     "action": "restart"
 }' 'https://cryptostar.ga/server-control'
 
-read -n 1 -s -r -p "Press any key to exit"
+# read -n 1 -s -r -p "Press any key to exit"
