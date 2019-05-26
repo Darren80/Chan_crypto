@@ -99,7 +99,7 @@ matomoApp.set('view engine', 'php');
 // routing all .php file to php-express
 matomoApp.all(/.+\.php$/, phpExpress.router);
 
-app.use('/analytics', express.static('/root/analytics/matomo', {
+matomoApp.use('/', express.static('/root/analytics/matomo', {
   index: 'index.php',
   fallthrough: false
 }));
