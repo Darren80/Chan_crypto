@@ -43,6 +43,7 @@
     "random-number-csprng": "^1.0.2",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
+    "react-ga": "^2.5.7",
     "react-html-parser": "^2.0.2",
     "react-scripts": "2.1.1",
     "sanitize-html": "^1.19.1",
