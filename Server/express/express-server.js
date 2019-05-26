@@ -15,10 +15,15 @@ const compress = require('./utils/compress');
 
 const user = require('./utils/users').user;
 require('./utils/passport');
+
+let phpExpress = require('php-express')({
+  binPath: 'php'
+});
 // const fetch = require('node-fetch');
 
 
 const app = express();
+const matomoApp = express();
 const owaspApp = express();
 
 let connectedClient = config.connectedClient;
@@ -87,10 +92,17 @@ app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build
     }
   }));
 
-// app.use('/analytics', express.static('/root/analytics/matomo', {
-//   index: 'index.php',
-//   fallthrough: false
-// }));
+matomoApp.set('views', './views');
+matomoApp.engine('php', phpExpress.engine);
+matomoApp.set('view engine', 'php');
+
+// routing all .php file to php-express
+matomoApp.all(/.+\.php$/, phpExpress.router);
+
+app.use('/analytics', express.static('/root/analytics/matomo', {
+  index: 'index.php',
+  fallthrough: false
+}));
 
 // owaspApp.use(function (req, res, next) {
 //   console.log(req);
@@ -174,6 +186,7 @@ function stopServer() {
 const mainApp = express();
 
 mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
+mainApp.use(vhost('matomo.cryptostar.ga', matomoApp));
 mainApp.use(vhost('localhost', app));
 mainApp.use(vhost('cryptostar.ga', app));
 
