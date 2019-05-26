@@ -87,7 +87,7 @@ app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build
     }
   }));
 
-  app.use('/analytics', express.static(path.join('/root/analytics/matomo')));
+app.use('/analytics', express.static('/root/analytics/matomo'));
 
 // owaspApp.use(function (req, res, next) {
 //   console.log(req);
