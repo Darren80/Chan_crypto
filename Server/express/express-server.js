@@ -72,7 +72,7 @@ app.post('/compress', async (req, res, next) => {
 
 });
 
-app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build'),
+app.use('/abc', auth.optional, express.static(path.join('/root/chan_crypto', 'build'),
   {
     setHeaders: (res, path) => {
       let mimeType = mime.lookup(path);
@@ -87,9 +87,7 @@ app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build
     }
   }));
 
-  app.use('/analytics', express.static(path.join(os.homedir(), 'analytics/matomo'), {
-    
-  }));
+  app.use('/analytics', express.static(path.join(os.homedir(), 'analytics/matomo')));
 
 // owaspApp.use(function (req, res, next) {
 //   console.log(req);
