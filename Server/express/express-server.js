@@ -15,11 +15,13 @@ const compress = require('./utils/compress');
 
 const user = require('./utils/users').user;
 require('./utils/passport');
-require('./generalUse');
+
 // const fetch = require('node-fetch');
 
 const app = express();
 const owaspApp = express();
+
+require('./generalUse');
 
 let cryptoDB;
 let accountsDB;
