@@ -45,21 +45,6 @@ let accountsDB;
 
 app.use(require('./routes'));
 
-
-
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-//   res.header('Access-Control-Expose-Headers', 'Content-Length');
-//   res.header('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, X-Requested-With, Range');
-//   if (req.method === 'OPTIONS') {
-//     return res.send(200);
-//   } else {
-//     return next();
-//   }
-// });
-
 app.post('/compress', async (req, res, next) => {
 
   try {
@@ -104,57 +89,59 @@ app.get('/loaderio', function (req, res) {
   res.sendFile(path.join(__dirname, 'loaderio-33196ca9af06d56ed7516a874a8089d6.txt'));
 });
 
-app.post('/server-control', auth.required, async (req, res, next) => {
-  const { payload } = req;
+app.use(require('./app/serverControl'));
 
-  let account = await findUser(payload.email);
+// app.post('/server-control', auth.required, async (req, res, next) => {
+//   const { payload } = req;
 
-  if (!account) {
-    return res.status(400).send('Account does not exist');
-  }
+//   let account = await findUser(payload.email);
 
-  let noPerms = (action) => {
-    return `Permissions needed to: ${action} the server.`;
-  }
+//   if (!account) {
+//     return res.status(400).send('Account does not exist');
+//   }
 
-  let intendedAction = req.body.action;
+//   let noPerms = (action) => {
+//     return `Permissions needed to: ${action} the server.`;
+//   }
 
-  switch (intendedAction) {
-    case 'restart':
-      if (account.permissions.restart) {
-        res.send('Server restarted.');
-        restartServer();
-      } else {
-        res.send(noPerms('restart'));
-      }
-      break;
+//   let intendedAction = req.body.action;
 
-    case 'stop':
-      if (account.permissions.stop) {
-        res.send('Server stopped.');
-        stopServer();
-      } else {
-        res.send(noPerms('stop'));
-      }
-      break;
+//   switch (intendedAction) {
+//     case 'restart':
+//       if (account.permissions.restart) {
+//         res.send('Server restarted.');
+//         restartServer();
+//       } else {
+//         res.send(noPerms('restart'));
+//       }
+//       break;
 
-    default:
-      res.send('Choose an action to perform.');
-      break;
-  }
-});
+//     case 'stop':
+//       if (account.permissions.stop) {
+//         res.send('Server stopped.');
+//         stopServer();
+//       } else {
+//         res.send(noPerms('stop'));
+//       }
+//       break;
 
-function restartServer() {
-  console.log("Server Restarted");
+//     default:
+//       res.send('Choose an action to perform.');
+//       break;
+//   }
+// });
 
-  shell.exec('pm2 restart "Express Server"');
-}
+// function restartServer() {
+//   console.log("Server Restarted");
 
-function stopServer() {
-  console.log("Server Stopped");
+//   shell.exec('pm2 restart "Express Server"');
+// }
 
-  shell.exec('pm2 delete "Express Server"');
-}
+// function stopServer() {
+//   console.log("Server Stopped");
+
+//   shell.exec('pm2 delete "Express Server"');
+// }
 
 const mainApp = express();
 
