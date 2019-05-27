@@ -21,6 +21,11 @@ require('./utils/passport');
 const app = express();
 const owaspApp = express();
 
+module.exports = {
+  app,
+  owaspApp
+}
+
 require('./generalUse');
 
 let cryptoDB;
@@ -173,7 +178,3 @@ process.on('SIGINT', () => {
   });
 });
 
-module.exports = {
-  app,
-  owaspApp
-}
