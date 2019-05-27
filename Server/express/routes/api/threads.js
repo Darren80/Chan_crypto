@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const connectedClient = require("../../../config").connectedClient;
-let cryptoDB = connectedClient.db('crypto');;
+let cryptoDB = connectedClient.db('crypto');
 
 (async () => {
 

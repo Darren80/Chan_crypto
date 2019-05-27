@@ -9,24 +9,18 @@ const os = require('os');
 const path = require('path');
 const mime = require('mime-types');
 const _ = require("underscore");
-const config = require("../config");
+const connectedClient = require("../config").connectedClient;
 
 const compress = require('./utils/compress');
 
 const user = require('./utils/users').user;
 require('./utils/passport');
 
-let phpExpress = require('php-express')({
-  binPath: 'php'
-});
 // const fetch = require('node-fetch');
 
-
 const app = express();
-const matomoApp = express();
 const owaspApp = express();
 
-let connectedClient = config.connectedClient;
 let cryptoDB;
 let accountsDB;
 
@@ -35,7 +29,6 @@ let accountsDB;
 
     cryptoDB = connectedClient.db('crypto');
     accountsDB = connectedClient.db('accounts');
-    console.log(process.argv);
 
   } catch (error) {
     console.log(error);
@@ -92,23 +85,13 @@ app.use('/', auth.optional, express.static(path.join('/root/chan_crypto', 'build
     }
   }));
 
-matomoApp.set('views', './views');
-matomoApp.engine('php', phpExpress.engine);
-matomoApp.set('view engine', 'php');
-
-// routing all .php file to php-express
-matomoApp.all(/.+\.php$/, phpExpress.router);
-
-matomoApp.use('/', express.static('/root/analytics/matomo', {
-  index: 'index.php',
-  fallthrough: false
-}));
-
 // owaspApp.use(function (req, res, next) {
 //   console.log(req);
 
 //   next();
 // })
+
+const findUser = require('./utils/findUser');
 
 owaspApp.use(express.static(path.join(os.homedir(), 'owasp_site/site')));
 
@@ -157,20 +140,6 @@ app.post('/server-control', auth.required, async (req, res, next) => {
   }
 });
 
-async function findUser(email) {
-
-  let account;
-  let cursor = await accountsDB.collection('users').find({ email: email }).limit(1);
-
-  if (await cursor.count() === 1) {
-    await cursor.forEach((userAccount) => {
-      account = userAccount;
-    });
-  }
-
-  return account;
-}
-
 function restartServer() {
   console.log("Server Restarted");
 
@@ -186,12 +155,10 @@ function stopServer() {
 const mainApp = express();
 
 mainApp.use(vhost('owasp.cryptostar.ga', owaspApp));
-mainApp.use(vhost('matomo.cryptostar.ga', matomoApp));
 mainApp.use(vhost('localhost', app));
 mainApp.use(vhost('cryptostar.ga', app));
 
 let server = mainApp.listen(3000, () => console.log("Server started."));
-
 
 process.on('SIGINT', () => {
   console.info('SIGINT signal received.');
@@ -207,3 +174,7 @@ process.on('SIGINT', () => {
   });
 });
 
+module.exports = {
+  app,
+  owaspApp
+}
