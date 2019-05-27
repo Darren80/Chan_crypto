@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const auth = require('./routes/auth');
+const auth = require('./../routes/auth');
 const findUser = require('./../utils/findUser');
 const shell = require('shelljs');
 
