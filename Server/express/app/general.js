@@ -1,13 +1,14 @@
-const { app, owaspApp } = require("./express-server");
+const express = require('express');
+const router = express.Router();
 
 const compression = require('compression');
 const bodyParser = require("body-parser");
 
-app.use(compression());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+router.use(compression());
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
 
-app.use((req, res, next) => {
+router.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
@@ -20,4 +21,4 @@ app.use((req, res, next) => {
     }
 });
 
-owaspApp.use(compression());
+module.exports = router;

@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-router.use('/api', require('./api'));
-router.use(require('./server'));
+const compression = require('compression');
 
-
+router.use(compression());
 
 module.exports = router;
