@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./users');
 
-const connectedClient = require("../../../config").connectedClient;
+const connectedClient = require("../../config").connectedClient;
 let accountsDB = connectedClient.db('accounts');
 
 passport.use(new LocalStrategy({
