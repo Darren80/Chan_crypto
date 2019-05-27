@@ -76,12 +76,10 @@ router.post('/login', auth.optional, (req, res, next) => {
 
         if (passportUser) {
             let user = new User(loginCredentials);
-            console.log('WOOO2');
-            return res.json({ user: user.toAuthJSON() });
-            console.log('WOOO3');
+            return res.json({ user: user.toAuthJSON(), info: info });
+        } else {
+            return res.status(400).json(info);
         }
-        console.log('WOOO');
-        return res.status(400).json(info);
     })(req, res, next);
 });
 
