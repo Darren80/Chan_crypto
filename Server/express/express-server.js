@@ -36,12 +36,9 @@ let accountsDB;
   }
 })();
 
-app.use(compression());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.use(require('./routes'));
 
-owaspApp.use(compression());
+
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
