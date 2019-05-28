@@ -5,8 +5,8 @@ const fetch = require('node-fetch'),
   shell = require('shelljs');
 
 const analyser = require('./dataAnalyser'),
-  cPaths = require('./../config.js').paths, //config paths
-  cUrls = require('./../config.js').urls;
+  cPaths = require('./config').paths, //config paths
+  cUrls = require('./config').urls;
 
 
 let connectedClient;

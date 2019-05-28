@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 //Material UI
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button } from '@material-ui/core';
-import img404 from '../../1024px-No_image_available.svg.png';
 
 
 

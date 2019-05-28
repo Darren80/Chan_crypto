@@ -69,14 +69,16 @@ class App extends Component {
     let url = "https://cryptostar.ga/api/threads";
     try {
       const response = await fetch(url);
+
       if (response.ok) {
         const responseJson = await response.json();
+
         this.setState({
           loaded: 1,
           threadPosts: responseJson.threads,
           threadKey: responseJson.date
         });
-        console.log(responseJson);
+        
       }
     } catch (e) {
       console.log(e);

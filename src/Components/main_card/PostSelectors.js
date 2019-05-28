@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import './PostSelectors.css';
 
-import img404 from '../../1024px-No_image_available.svg.png';
+import img404 from '../../images/No_image_available.svg.png';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
-import { Timeline } from '../display/timeline.js';
+import { Timeline } from '../timeline/timeline.js';
 
 import ReactGA from 'react-ga';
 
 import { CardDetails } from './cardDetails';
+import getImage from './downloadImage';
 // const Modernizr = require("../modernizr");
 
 const _ = require("underscore");
@@ -17,7 +18,6 @@ let saveData = false;
 let controller = new AbortController();
 let signal = controller.signal;
 
-let fetching = false;
 let processing = 0;
 
 const corsProxy = "https://cors-proxy-0.herokuapp.com/";
@@ -61,7 +61,7 @@ export class PostSelectors extends React.Component {
     if (i !== this.props.postIndex) {
       this.props.updateIndex(i);
     } else {
-      this.getImage(tim, ext);
+      getImage(tim, ext, saveData);
     }
   }
 
@@ -75,7 +75,7 @@ export class PostSelectors extends React.Component {
 
 
     if ((this.props.postIndex !== prevProps.postIndex) || this.props.threadKey !== prevProps.threadKey) {
-      this.getImage(tim, ext);
+      this.getImage(tim, ext, saveData);
     }
   }
 
@@ -100,6 +100,8 @@ export class PostSelectors extends React.Component {
   }
 
   async getImage(tim, ext, url) {
+
+
 
     // window.modernizr.on('webp', function (result) {
     //   console.log(result);

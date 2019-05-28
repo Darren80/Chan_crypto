@@ -2,7 +2,7 @@ const shell = require('shelljs');
 const process = require('process');
 
 const Posts = require('./GetAllPosts');
-const cUrls = require('./../config').urls;
+const cUrls = require('./config').urls;
 
 
 const fetch = require('node-fetch');
