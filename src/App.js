@@ -26,7 +26,6 @@ class App extends Component {
       }
     };
     this.fetchBoardCatalog = this.fetchBoardCatalog.bind(this);
-    this.prepareData = this.prepareData.bind(this);
     this.refreshCatalog = this.refreshCatalog.bind(this);
     this.handleData = this.handleData.bind(this);
 
@@ -66,11 +65,6 @@ class App extends Component {
   }
 
   async fetchBoardCatalog() {
-    //Retrive the latest /biz/ catalog
-    this.prepareData();
-  }
-
-  async prepareData() {
 
     let url = "https://cryptostar.ga/api/threads";
     try {
@@ -85,7 +79,7 @@ class App extends Component {
         console.log(responseJson);
       }
     } catch (e) {
-
+      console.log(e);
     }
 
     let crypto = () => {
