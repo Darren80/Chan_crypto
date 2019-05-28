@@ -1,4 +1,4 @@
-const connectedClient = require("../../config").connectedClient;
+const connectedClient = require("../config/config").connectedClient;
 let accountsDB = connectedClient.db('accounts');
 
 async function findUser(email) {

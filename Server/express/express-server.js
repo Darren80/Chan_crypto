@@ -7,11 +7,11 @@ const path = require('path');
 const mime = require('mime-types');
 
 const auth = require('./routes/auth');
-require('./utils/passport');
+require('./config/passport');
 
 const app = express();
 
-app.use(require('./app/general'));
+app.use(require('./general/app'));
 app.use(require('./routes'));
 
 app.use('/', auth.optional, express.static(path.join(os.homedir(), 'chan_crypto', 'build'),
@@ -36,7 +36,7 @@ app.get('/loaderio', (req, res) => {
 
 const owaspApp = express();
 
-owaspApp.use(require('./owasp/general'));
+owaspApp.use(require('./general/owasp'));
 owaspApp.use(express.static(path.join(os.homedir(), 'owasp_site/site')));
 
 const mainApp = express();

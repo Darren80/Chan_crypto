@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../auth');
-const findUser = require('../../utils/findUser');
+const findUser = require('../../utils/CRUD');
 
 const shell = require('shelljs');
 

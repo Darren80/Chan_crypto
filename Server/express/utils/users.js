@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-const bufIsEqual = require('../utils/bufIsEqual');
+const bufIsEqual = require('./bufIsEqual');
 const jwtSecret = require('../../jwtSecret');
 
 class User {

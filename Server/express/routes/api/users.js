@@ -3,7 +3,7 @@ const router = require('express').Router();
 const auth = require('../auth');
 const User = require('../../utils/users');
 
-const connectedClient = require("../../../config").connectedClient;
+const connectedClient = require("../../config/config").connectedClient;
 let accountsDB = connectedClient.db('accounts');
 
 //POST new user route (optional, everyone has access)
