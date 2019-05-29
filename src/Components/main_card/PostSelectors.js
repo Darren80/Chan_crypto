@@ -9,7 +9,7 @@ import { Timeline } from '../timeline/timeline.js';
 import ReactGA from 'react-ga';
 
 import { CardDetails } from './cardDetails';
-import getImage from './downloadImage';
+import { GetImage } from './downloadImage';
 // const Modernizr = require("../modernizr");
 
 const _ = require("underscore");
@@ -30,53 +30,30 @@ window.requestIdleCallback((idleDeadline) => {
 export class PostSelectors extends React.Component {
   constructor(props) {
     super(props);
-    this.getImage = this.getImage.bind(this);
+    // this.getImage = this.getImage.bind(this);
     this.arrayBufferToBase64 = this.arrayBufferToBase64.bind(this);
-    this.progress = this.progress.bind(this);
     this.nsfwReveal = this.nsfwReveal.bind(this);
   }
 
   async componentDidMount() {
 
-    if ("connection" in navigator) {
-      let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
-      if (connection.saveData === true) {
-        saveData = true;
-      } else {
-        saveData = false;
-      }
-    }
-
-    let postIndex = this.props.postIndex;
-    let threadPosts = this.props.threadPosts;
-    if (!threadPosts[postIndex]) { return };
-    let tim = threadPosts[postIndex].posts[0].tim;
-    let ext = threadPosts[postIndex].posts[0].ext;
-
     let i = Number(localStorage.getItem("currentPostIndex"));
+    let prevThreadKey = Number(localStorage.getItem("threadKey"));
+
     if (isNaN(i)) {
       return;
     };
-    if (i !== this.props.postIndex) {
-      this.props.updateIndex(i);
+
+    if (prevThreadKey !== this.props.threadKey) {
+      localStorage.setItem('currentPostIndex', '0');
+      this.props.updateIndex(0);
     } else {
-      getImage(tim, ext, saveData);
+      this.props.updateIndex(i);
     }
   }
 
   async componentDidUpdate(prevProps) {
 
-    let postIndex = this.props.postIndex;
-    let threadPosts = this.props.threadPosts
-    if (!threadPosts[postIndex]) { return };
-    let tim = threadPosts[postIndex].posts[0].tim;
-    let ext = threadPosts[postIndex].posts[0].ext;
-
-
-    if ((this.props.postIndex !== prevProps.postIndex) || this.props.threadKey !== prevProps.threadKey) {
-      this.getImage(tim, ext, saveData);
-    }
   }
 
   arrayBufferToBase64(buffer) {
@@ -88,143 +65,141 @@ export class PostSelectors extends React.Component {
     return window.btoa(binary);
   }
 
-  progress({ loaded, total }) {
-    let percent = Math.round(loaded / total * 100);
-    console.log(this.props.imgPercent);
+  // progress({ loaded, total }) {
+  //   let percent = Math.round(loaded / total * 100);
+  //   console.log(this.props.imgPercent);
 
-    if (!percent) {
-      this.props.updateImgPercent(0);
-    } else {
-      this.props.updateImgPercent(Math.round(loaded / total * 100));
-    }
-  }
+  //   if (!percent) {
+  //     this.props.updateImgPercent(0);
+  //   } else {
+  //     this.props.updateImgPercent(Math.round(loaded / total * 100));
+  //   }
+  // }
 
-  async getImage(tim, ext, url) {
+  // async getImage(tim, ext, url) {
 
+  //   // window.modernizr.on('webp', function (result) {
+  //   //   console.log(result);
+  //   // });
 
+  //   let imageStr;
+  //   let imageUrl;
+  //   let that = this;
+  //   let type;
 
-    // window.modernizr.on('webp', function (result) {
-    //   console.log(result);
-    // });
-    
-    let imageStr;
-    let imageUrl;
-    let that = this;
-    let type;
+  //   //Abort a fetch request before a new one is made.
+  //   if (processing) {
+  //     controller.abort();
+  //   }
+  //   let imageUrls = Object.assign({}, this.props.imageUrls);
+  //   // eslint-disable-next-line no-undef
+  //   if (saveData || this.props.connectionSpeed < 3) {
+  //     // eslint-disable-next-line no-undef
+  //     if (Modernizr.webp && ['.jpg', '.jpeg', '.png', '.gif'].includes(ext)) {
+  //       imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed_webp/${tim}.webp`;
+  //       imageUrls.type = 'compressed_webp'
+  //     } else {
+  //       imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed/${tim}${ext}`;
+  //       imageUrls.type = 'compressed';
+  //     }
+  //   } else {
+  //     imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_lossless/${tim}${ext}`;
+  //     imageUrls.type = 'lossless';
+  //   }
 
-    //Abort a fetch request before a new one is made.
-    if (processing) {
-      controller.abort();
-    }
-    let imageUrls = Object.assign({}, this.props.imageUrls);
-    // eslint-disable-next-line no-undef
-    if (saveData || this.props.connectionSpeed < 3) {
-      // eslint-disable-next-line no-undef
-      if (Modernizr.webp && ['.jpg', '.jpeg', '.png', '.gif'].includes(ext)) {
-        imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed_webp/${tim}.webp`;
-        imageUrls.type = 'compressed_webp'
-      } else {
-        imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_compressed/${tim}${ext}`;
-        imageUrls.type = 'compressed';
-      }
-    } else {
-      imageUrl = `https://images.cryptostar.ga/file/lon1-static/images_lossless/${tim}${ext}`;
-      imageUrls.type = 'lossless';
-    }
+  //   this.props.updateImageUrls(imageUrls);
 
-    this.props.updateImageUrls(imageUrls);
+  //   try {
 
-    try {
+  //     setTimeout(() => {
+  //       this.props.showProgressBar(true);
+  //     }, 1000);  
 
-      setTimeout(() => {
-        this.props.showProgressBar(true);
-      }, 1000);  
+  //     processing++;
+  //     controller = new AbortController();
+  //     signal = controller.signal;
 
-      processing++;
-      controller = new AbortController();
-      signal = controller.signal;
+  //     let response = await fetch(`${imageUrl}`, {
+  //       method: 'get',
+  //       signal: signal
+  //     });
 
-      let response = await fetch(`${imageUrl}`, {
-        method: 'get',
-        signal: signal
-      });
+  //     if (response.status === 404) {
+  //       throw new Error('404');
+  //     }
 
-      if (response.status === 404) {
-        throw new Error('404');
-      }
+  //     let contentLength = response.headers.get('content-length');
+  //     if (!contentLength) {
+  //       contentLength = 0;
+  //     }
 
-      let contentLength = response.headers.get('content-length');
-      if (!contentLength) {
-        contentLength = 0;
-      }
+  //     const total = parseInt(contentLength, 10);
+  //     let loaded = 0;
 
-      const total = parseInt(contentLength, 10);
-      let loaded = 0;
+  //     let timer1 = setInterval(() => {
+  //       this.progress({ loaded, total });
+  //     }, 500);
 
-      let timer1 = setInterval(() => {
-        this.progress({ loaded, total });
-      }, 500);
+  //     try {
 
-      try {
+  //       response = new Response(
+  //         new ReadableStream({
+  //           start(controller) {
+  //             const reader = response.body.getReader();
 
-        response = new Response(
-          new ReadableStream({
-            start(controller) {
-              const reader = response.body.getReader();
+  //             read();
+  //             function read() {
 
-              read();
-              function read() {
+  //               reader.read().then(({ done, value }) => {
+  //                 if (done) {
+  //                   window.clearInterval(timer1);
+  //                   that.props.updateImgPercent(0);
+  //                   controller.close();
+  //                   return;
+  //                 }
+  //                 loaded += value.byteLength;
+  //                 controller.enqueue(value);
+  //                 read();
+  //               }).catch(error => {
+  //                 console.error(error);
+  //                 controller.error(error)
+  //               });
+  //             }
+  //           }
+  //         })
+  //         , { signal });
 
-                reader.read().then(({ done, value }) => {
-                  if (done) {
-                    window.clearInterval(timer1);
-                    that.props.updateImgPercent(0);
-                    controller.close();
-                    return;
-                  }
-                  loaded += value.byteLength;
-                  controller.enqueue(value);
-                  read();
-                }).catch(error => {
-                  console.error(error);
-                  controller.error(error)
-                });
-              }
-            }
-          })
-          , { signal });
+  //     } catch (error) {
 
-      } catch (error) {
+  //       throw error;
 
-        throw error;
+  //     }
 
-      }
+  //     let blob = await response.blob();
 
-      let blob = await response.blob();
+  //     this.props.updateImage(URL.createObjectURL(blob));
 
-      this.props.updateImage(URL.createObjectURL(blob));
+  //     this.props.showProgressBar(false);
 
-      this.props.showProgressBar(false);
+  //   } catch (error) {
 
-    } catch (error) {
+  //     console.log(error.message);
+  //     that.props.updateImgPercent(0);
+  //     if (error.message === "404") {
+  //       this.props.updateImage(`${img404}`);
+  //     } else if (error.message === 'The user aborted a request.') {
+  //       //Request Aborted
+  //     } else {
+  //       this.props.updateImage(`disconnected`);
+  //     }
 
-      console.log(error.message);
-      that.props.updateImgPercent(0);
-      if (error.message === "404") {
-        this.props.updateImage(`${img404}`);
-      } else if (error.message === 'The user aborted a request.') {
-        //Request Aborted
-      } else {
-        this.props.updateImage(`disconnected`);
-      }
+  //   } finally {
 
-    } finally {
+  //     processing--;
+  //     return imageStr;
 
-      processing--;
-      return imageStr;
-
-    }
-  }
+  //   }
+  // }
 
   nsfwReveal() {
     console.log('Revealed');
@@ -249,17 +224,17 @@ export class PostSelectors extends React.Component {
       <div className="biz-card">
         <div id="0" className="Preamble">
 
-          <Timeline {...this.props}
-          />
+
+          <GetImage {...this.props} />
 
           <button onClick={() => this.props.updateIndex(this.props.postIndex - 10)}>Left 10</button>
-          <button onClick={() => { 
+          <button onClick={() => {
             this.props.updateIndex(this.props.postIndex - 1);
             ReactGA.event({
               category: 'User',
               action: 'Back'
             });
-            }}>Left</button>
+          }}>Left</button>
           <a href={`https://boards.4channel.org/biz/thread/${getLink()}`} target="_blank" rel="noopener noreferrer">
             <button>Go</button>
           </a>
@@ -280,11 +255,15 @@ export class PostSelectors extends React.Component {
             imgPercent={this.props.imgPercent}
 
             connectionSpeed={this.props.connectionSpeed}
-
             isShowProgressBar={this.props.isShowProgressBar}
 
             updateImageUrls={this.props.updateImageUrls}
-            imageUrls={this.props.imageUrls} />
+            imageUrls={this.props.imageUrls}
+
+            isDownloading={this.props.isDownloading} />
+
+          <Timeline {...this.props}
+          />
         </div>
       </div>
     )

@@ -32,26 +32,31 @@ export class CardDetails extends React.Component {
         if (!this.props.isShowProgressBar) {
             return;
         }
-        if (!this.props.threadImage) {
-            return <LinearProgress
-                className="linear-progress"
-                color="secondary"
-            />
-        } else if (this.props.imgPercent !== 0) {
-            return <LinearProgress
-                className="linear-progress"
-                color="secondary"
-                variant="determinate"
-                value={this.props.imgPercent}
-            />
-        } else if (this.props.threadImage === 'disconnected') {
-            return <div>
-                <p>Check your connection and try again.</p>
-                <button onClick={() => this.forceUpdate()}>Retry</button>
-            </div>
-        } else if (this.props.threadImage) {
+
+        if (this.props.isDownloading) {
+
+            if (this.props.imgPercent === 0) {
+                return <LinearProgress
+                    className="linear-progress"
+                    color="secondary"
+                />
+            } else if (this.props.imgPercent > 0) {
+                return <LinearProgress
+                    className="linear-progress"
+                    color="secondary"
+                    variant="determinate"
+                    value={this.props.imgPercent}
+                />
+            }
             return <></>
         }
+
+        // if (this.props.threadImage === 'disconnected') {
+        //     return <div>
+        //         <p>Check your connection and try again.</p>
+        //         <button onClick={() => this.forceUpdate()}>Retry</button>
+        //     </div>
+        // } 
 
     }
 
@@ -117,6 +122,7 @@ export class CardDetails extends React.Component {
         let fwImage2 = `${getThread(2).posts[0].tim}${getThread(2).posts[0].ext}`;
 
         let hours = Math.abs(new Date(this.props.threadKey) - new Date(tim)) / 36e5;
+        
         hours = hours.toFixed(1);
         let postCount = threadPosts[postIndex].posts.length;
 

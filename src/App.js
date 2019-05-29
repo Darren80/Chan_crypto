@@ -17,6 +17,7 @@ class App extends Component {
       postIndex: 0,
       threadImage: '',
       imgDownloadPercent: 0,
+      isDownloading: false,
       showProgressBar: false,
       revealNsfw: false,
       connectionSpeed: 999,
@@ -38,6 +39,7 @@ class App extends Component {
     this._hideOfflineMessage = this._hideOfflineMessage.bind(this);
     this.updateImageUrls = this.updateImageUrls.bind(this);
     this.showProgressBar = this.showProgressBar.bind(this);
+    this.imageIsDownloading = this.imageIsDownloading.bind(this);
     
 
   }
@@ -78,6 +80,8 @@ class App extends Component {
           threadPosts: responseJson.threads,
           threadKey: responseJson.date
         });
+
+        localStorage.setItem("threadKey", responseJson.date);
         
       }
     } catch (e) {
@@ -182,11 +186,19 @@ class App extends Component {
       revealNsfw: false
     });
   }
+
   updateImgDownloadPercent(percent) {
     this.setState({
       imgDownloadPercent: percent
     });
   }
+
+  imageIsDownloading(boolean) {
+    this.setState({
+      isDownloading: boolean
+    });
+  }
+
   updateImage(img) {
     this.setState({
       threadImage: img
@@ -255,6 +267,8 @@ class App extends Component {
 
             updateImgPercent={this.updateImgDownloadPercent}
             imgPercent={this.state.imgDownloadPercent}
+            imageIsDownloading={this.imageIsDownloading}
+            isDownloading={this.state.isDownloading}
 
             updateImage={this.updateImage}
             threadImage={this.state.threadImage}
