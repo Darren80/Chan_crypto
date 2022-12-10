@@ -10,7 +10,7 @@
     "cors": "^2.8.5",
     "cryptocurrencies": "^5.0.0",
     "deepai": "^1.0.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-jwt": "^5.3.1",
     "flesch-kincaid": "github:daveross/flesch-kincaid",
     "he": "^1.2.0",
