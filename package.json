@@ -24,7 +24,7 @@
     "imagemin-pngquant": "^7.0.0",
     "imagemin-webp": "^5.0.0",
     "is-progressive-cli": "^1.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "linkifyjs": "^2.1.7",
     "localforage": "^1.7.3",
     "modernizr": "^3.7.1",
